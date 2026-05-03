@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>소문 마을 NEXT</title>
+    <link rel="stylesheet" href="../../shared/project-topbar-compact.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <nav class="top-nav" aria-label="상단 이동">
+      <a href="../../index.html">메인</a>
+      <span>|</span>
+      <a href="../index.html">17과</a>
+      <span>|</span>
+      <a href="../vocabulary.html">어휘</a>
+      <span>|</span>
+      <a href="../vocab-support-rumor-flow.html">소문 흐름</a>
+    </nav>
+
+    <main class="prototype-shell">
+      <section class="game-stage" aria-label="소문 마을 NEXT 프로토타입">
+        <canvas id="gameCanvas" width="960" height="640" aria-label="소문을 무마하는 마을 게임 화면"></canvas>
+
+        <div class="hud">
+          <div class="hud__cluster hud__cluster--mission">
+            <span class="hud__label">현재 상황</span>
+            <strong id="missionTitle">빌런이 오해를 퍼뜨렸습니다</strong>
+            <p id="missionDetail">NPC와 대화해서 가능성을 판단하고 오해를 풀어 주세요.</p>
+          </div>
+          <div class="hud__cluster hud__cluster--stats">
+            <span>확산도 <b id="spreadText">0</b></span>
+            <span>아군 <b id="allyText">0</b>/<b id="allyTotalText">0</b></span>
+            <span>소문 <b id="slimeText">0</b></span>
+          </div>
+        </div>
+
+        <div class="mini-map-card" aria-label="소문 미니맵">
+          <canvas id="miniMap" width="168" height="126" aria-label="소문 확산 미니맵"></canvas>
+        </div>
+
+        <div id="prompt" class="prompt hidden"></div>
+        <div id="toast" class="toast hidden" aria-live="polite"></div>
+
+        <section id="dialogue" class="dialogue hidden" aria-live="polite">
+          <div class="dialogue__header">
+            <span id="speakerName" class="dialogue__speaker">민지</span>
+            <span id="dialogueStep" class="dialogue__step">가능성 판단</span>
+          </div>
+          <p id="dialogueText"></p>
+          <p id="dialogueClue" class="dialogue__clue"></p>
+          <div id="dialogueOptions" class="dialogue__options"></div>
+        </section>
+
+        <section id="finishCard" class="finish-card hidden" aria-live="polite">
+          <span class="finish-card__tag">Rumor Cleared</span>
+          <h1>마을의 오해가 풀렸습니다</h1>
+          <p>가능성 표현과 감정 표현을 사용해 소문 확산을 막았습니다.</p>
+          <p id="finishSummary" class="finish-summary">정리 중입니다.</p>
+          <button id="restartButton" type="button">다시 시작</button>
+        </section>
+
+        <div class="toolbelt" aria-label="조작">
+          <button type="button" data-action="move" data-dir="up">위</button>
+          <button type="button" data-action="move" data-dir="left">왼쪽</button>
+          <button type="button" data-action="interact">확인</button>
+          <button type="button" data-action="move" data-dir="right">오른쪽</button>
+          <button type="button" data-action="move" data-dir="down">아래</button>
+        </div>
+      </section>
+
+      <aside class="side-panel">
+        <section class="panel-block">
+          <span class="panel-label">Rumor System</span>
+          <h2>소문 확산</h2>
+          <div class="spread-meter" aria-label="소문 확산도">
+            <span id="spreadFill"></span>
+          </div>
+          <p id="spreadHint" class="panel-copy">소문 슬라임은 시간이 지나면 늘어납니다.</p>
+        </section>
+
+        <section class="panel-block">
+          <span class="panel-label">Vocabulary</span>
+          <h2>오늘 쓰는 표현</h2>
+          <ul id="expressionList" class="expression-list"></ul>
+        </section>
+
+        <section class="panel-block">
+          <span class="panel-label">Town Log</span>
+          <h2>무마 기록</h2>
+          <ol id="actionLog" class="action-log"></ol>
+        </section>
+      </aside>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
