@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-NB76SV96');</script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>16과 어휘·문법 모의고사</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root {
+            --bg: #f1f5f9;
+            --surface: #ffffff;
+            --ink: #0f172a;
+            --muted: #64748b;
+            --line: #dbe3ef;
+            --blue: #2563eb;
+            --blue-soft: #dbeafe;
+            --green: #059669;
+            --green-soft: #dcfce7;
+            --red: #dc2626;
+            --red-soft: #fee2e2;
+            --amber: #d97706;
+            --amber-soft: #fff7ed;
+            --shadow: 0 18px 34px rgba(15, 23, 42, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #f8fafc 0%, var(--bg) 100%);
+            color: var(--ink);
+            font-family: "Noto Sans KR", sans-serif;
+        }
+
+        button {
+            font: inherit;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 44px;
+            padding: 0 14px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.34);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .topbar a {
+            color: #1d4ed8;
+            text-decoration: none;
+        }
+
+        .topbar strong {
+            overflow: hidden;
+            color: #0f172a;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .shell {
+            width: min(1180px, calc(100% - 24px));
+            margin: 0 auto;
+            padding: 12px 0 34px;
+        }
+
+        .panel {
+            border: 1px solid rgba(148, 163, 184, 0.42);
+            border-radius: 8px;
+            background: var(--surface);
+            box-shadow: var(--shadow);
+        }
+
+        .exam-head {
+            display: grid;
+            gap: 12px;
+            padding: 14px;
+        }
+
+        .head-row,
+        .meta-row,
+        .toolbar,
+        .footer {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .head-row,
+        .toolbar,
+        .footer {
+            justify-content: space-between;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(24px, 3.4vw, 38px);
+            font-weight: 900;
+            line-height: 1.25;
+            letter-spacing: 0;
+        }
+
+        .badge,
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            min-height: 30px;
+            border-radius: 999px;
+            padding: 0 10px;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .badge {
+            border: 1px solid #bfdbfe;
+            background: var(--blue-soft);
+            color: #1d4ed8;
+        }
+
+        .badge.is-save {
+            border-color: #86efac;
+            background: var(--green-soft);
+            color: #047857;
+        }
+
+        .badge.is-warn {
+            border-color: #fed7aa;
+            background: var(--amber-soft);
+            color: #9a3412;
+        }
+
+        .chip {
+            border: 1px solid #dbe3ef;
+            background: #f8fafc;
+            color: #334155;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .stat {
+            min-width: 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+            background: #f8fafc;
+        }
+
+        .stat span {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .stat strong {
+            display: block;
+            margin-top: 2px;
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .progress {
+            overflow: hidden;
+            height: 10px;
+            border-radius: 999px;
+            background: #e2e8f0;
+        }
+
+        .progress span {
+            display: block;
+            width: var(--value, 0%);
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #2563eb, #059669);
+            transition: width 180ms ease;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-height: 36px;
+            border: 1px solid #bfdbfe;
+            border-radius: 999px;
+            padding: 0 13px;
+            background: #ffffff;
+            color: #1d4ed8;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .btn.primary {
+            border-color: var(--blue);
+            background: var(--blue);
+            color: #ffffff;
+        }
+
+        .btn.danger {
+            border-color: #fecaca;
+            background: #fff1f2;
+            color: #be123c;
+        }
+
+        .btn:disabled {
+            opacity: 0.48;
+            cursor: not-allowed;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 190px minmax(0, 1fr);
+            gap: 12px;
+            align-items: start;
+            margin-top: 12px;
+        }
+
+        .nav-panel {
+            position: sticky;
+            top: 56px;
+            display: grid;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .question-nav {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 6px;
+        }
+
+        .nav-dot {
+            display: grid;
+            place-items: center;
+            aspect-ratio: 1;
+            border: 1px solid #dbe3ef;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #334155;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .nav-dot.is-answered {
+            border-color: #bfdbfe;
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .nav-dot.is-current {
+            border-color: var(--green);
+            background: var(--green-soft);
+            color: #047857;
+        }
+
+        .nav-dot.is-wrong {
+            border-color: #fecaca;
+            background: var(--red-soft);
+            color: #b91c1c;
+        }
+
+        .question-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .question-card {
+            display: grid;
+            gap: 10px;
+            padding: 14px;
+            scroll-margin-top: 58px;
+        }
+
+        .question-card.is-current {
+            outline: 3px solid rgba(37, 99, 235, 0.14);
+        }
+
+        .q-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .q-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 30px;
+            border-radius: 999px;
+            background: #0f172a;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .q-prompt {
+            margin: 0;
+            font-size: 17px;
+            font-weight: 900;
+            line-height: 1.5;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+
+        .q-context {
+            margin: 0;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1.45;
+        }
+
+        .q-media {
+            display: grid;
+            grid-template-columns: 88px minmax(0, 1fr);
+            gap: 10px;
+            align-items: center;
+            margin: 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px;
+            background: #f8fafc;
+        }
+
+        .q-media img,
+        .q-media__emoji {
+            width: 88px;
+            aspect-ratio: 1;
+            border-radius: 7px;
+            background: #ffffff;
+        }
+
+        .q-media img {
+            display: block;
+            object-fit: cover;
+            border: 1px solid #e2e8f0;
+        }
+
+        .q-media__emoji {
+            display: grid;
+            place-items: center;
+            border: 1px solid #dbeafe;
+            font-size: 42px;
+        }
+
+        .q-media figcaption {
+            color: #334155;
+            font-size: 13px;
+            font-weight: 900;
+            line-height: 1.4;
+            word-break: keep-all;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .option {
+            display: grid;
+            grid-template-columns: 28px 1fr;
+            gap: 8px;
+            align-items: start;
+            min-height: 54px;
+            border: 1px solid #dbe3ef;
+            border-radius: 8px;
+            padding: 9px;
+            background: #ffffff;
+            color: var(--ink);
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .option strong {
+            display: grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            background: #f1f5f9;
+            color: #334155;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .option span {
+            align-self: center;
+            min-width: 0;
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.45;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+
+        .option.is-selected {
+            border-color: var(--blue);
+            background: #eff6ff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .option.is-correct {
+            border-color: var(--green);
+            background: var(--green-soft);
+        }
+
+        .option.is-wrong {
+            border-color: var(--red);
+            background: var(--red-soft);
+        }
+
+        .feedback {
+            display: none;
+            border-radius: 8px;
+            padding: 10px;
+            background: #f8fafc;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1.45;
+        }
+
+        .feedback.is-visible {
+            display: block;
+        }
+
+        .footer {
+            margin-top: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-panel {
+                position: static;
+            }
+
+            .question-nav {
+                grid-template-columns: repeat(10, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 620px) {
+            body {
+                background: #ffffff;
+            }
+
+            .topbar {
+                display: none;
+            }
+
+            .shell {
+                width: 100%;
+                padding: 0 0 56px;
+            }
+
+            .exam-head {
+                position: fixed;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                z-index: 45;
+                display: block;
+                border-width: 1px 0 0;
+                border-radius: 0;
+                padding: 6px;
+                background: rgba(255, 255, 255, 0.96);
+                box-shadow: 0 -10px 22px rgba(15, 23, 42, 0.1);
+                backdrop-filter: blur(12px);
+            }
+
+            .exam-head .head-row,
+            .exam-head .stats,
+            .exam-head .progress,
+            .exam-head .toolbar .meta-row:first-child {
+                display: none;
+            }
+
+            .exam-head .toolbar {
+                display: block;
+            }
+
+            .exam-head .toolbar .meta-row:last-child {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 6px;
+            }
+
+            #resumeBtn {
+                display: none;
+            }
+
+            .exam-head .btn {
+                min-height: 38px;
+                border-radius: 8px;
+                padding: 0 6px;
+                font-size: 12px;
+            }
+
+            .layout {
+                display: block;
+                margin-top: 0;
+            }
+
+            .nav-panel {
+                position: sticky;
+                top: 0;
+                z-index: 35;
+                border-width: 0 0 1px;
+                border-radius: 0;
+                padding: 4px 5px;
+                background: rgba(255, 255, 255, 0.97);
+                box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+                backdrop-filter: blur(12px);
+            }
+
+            .nav-panel .meta-row {
+                display: none;
+            }
+
+            .question-nav {
+                display: flex;
+                grid-template-columns: none;
+                gap: 3px;
+                overflow-x: auto;
+                padding: 1px 0 2px;
+                scrollbar-width: none;
+            }
+
+            .question-nav::-webkit-scrollbar {
+                display: none;
+            }
+
+            .nav-dot {
+                flex: 0 0 24px;
+                width: 24px;
+                height: 24px;
+                border-radius: 5px;
+                font-size: 10px;
+                aspect-ratio: auto;
+            }
+
+            .question-list {
+                gap: 8px;
+                padding: 7px;
+            }
+
+            .question-card {
+                gap: 8px;
+                border-radius: 7px;
+                padding: 10px;
+                scroll-margin-top: 36px;
+                box-shadow: none;
+            }
+
+            .question-card.is-current {
+                outline: 2px solid rgba(37, 99, 235, 0.12);
+            }
+
+            .q-head {
+                justify-content: flex-start;
+                gap: 5px;
+            }
+
+            .q-head .badge,
+            .q-head .chip {
+                display: none;
+            }
+
+            .q-number {
+                min-width: 30px;
+                height: 24px;
+                border-radius: 6px;
+                font-size: 11px;
+            }
+
+            .q-prompt {
+                font-size: 15px;
+                line-height: 1.38;
+            }
+
+            .q-context {
+                font-size: 12px;
+                line-height: 1.34;
+            }
+
+            .q-media {
+                grid-template-columns: 56px minmax(0, 1fr);
+                gap: 7px;
+                padding: 6px;
+            }
+
+            .q-media img,
+            .q-media__emoji {
+                width: 56px;
+                border-radius: 6px;
+            }
+
+            .q-media__emoji {
+                font-size: 30px;
+            }
+
+            .q-media figcaption {
+                font-size: 12px;
+                line-height: 1.32;
+            }
+
+            .stats,
+            .options {
+                grid-template-columns: 1fr;
+            }
+
+            .options {
+                gap: 6px;
+            }
+
+            .option {
+                grid-template-columns: 24px 1fr;
+                min-height: 42px;
+                gap: 7px;
+                padding: 7px;
+            }
+
+            .option strong {
+                width: 24px;
+                height: 24px;
+                font-size: 11px;
+            }
+
+            .option span {
+                font-size: 13px;
+                line-height: 1.34;
+            }
+
+            .feedback {
+                padding: 8px;
+                font-size: 12px;
+                line-height: 1.36;
+            }
+
+            .footer {
+                display: none;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="../shared/project-topbar-compact.css" />
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NB76SV96"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <nav class="topbar">
+        <a href="../index.html"><i class="fa-solid fa-house"></i> 메인</a>
+        <span>|</span>
+        <a href="index.html">16과 목록</a>
+        <span>|</span>
+        <strong>16과 어휘·문법 모의고사</strong>
+    </nav>
+
+    <main class="shell">
+        <section class="exam-head panel" aria-live="polite">
+            <div class="head-row">
+                <h1>16과 어휘·문법 모의고사</h1>
+                <span class="badge is-save" id="saveBadge"><i class="fa-solid fa-cloud-arrow-up"></i> 자동저장</span>
+            </div>
+            <div class="stats">
+                <div class="stat"><span>문항</span><strong id="totalStat">40</strong></div>
+                <div class="stat"><span>응답</span><strong id="answeredStat">0</strong></div>
+                <div class="stat"><span>점수</span><strong id="scoreStat">-</strong></div>
+                <div class="stat"><span>정답 위치</span><strong id="balanceStat">10/10/10/10</strong></div>
+            </div>
+            <div class="progress" aria-label="응답 진행률"><span id="progressBar"></span></div>
+            <div class="toolbar">
+                <div class="meta-row">
+                    <span class="chip"><i class="fa-solid fa-book"></i> 어휘 20</span>
+                    <span class="chip"><i class="fa-solid fa-pen-nib"></i> 문법 20</span>
+                    <span class="chip" id="attemptChip"></span>
+                </div>
+                <div class="meta-row">
+                    <button class="btn" type="button" id="resumeBtn"><i class="fa-solid fa-rotate-left"></i> 복원</button>
+                    <button class="btn danger" type="button" id="newAttemptBtn"><i class="fa-solid fa-shuffle"></i> 새 시험</button>
+                    <button class="btn primary" type="button" id="submitBtn"><i class="fa-solid fa-circle-check"></i> 채점</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="layout" aria-label="16과 어휘 문법 모의고사">
+            <aside class="nav-panel panel">
+                <div class="meta-row">
+                    <span class="badge">문항 이동</span>
+                </div>
+                <div class="question-nav" id="questionNav"></div>
+            </aside>
+
+            <section class="question-list" id="questionList"></section>
+        </section>
+
+        <nav class="footer" aria-label="16과 이동">
+            <a class="btn" href="index.html"><i class="fa-solid fa-arrow-left"></i> 16과 목록</a>
+            <a class="btn" href="vocabulary.html"><i class="fa-solid fa-book"></i> 어휘</a>
+            <a class="btn primary" href="grammar1.html">문법 1 <i class="fa-solid fa-arrow-right"></i></a>
+        </nav>
+    </main>
+
+    <script>
+        const STORAGE_KEY = 'korean3b:c16:mockExam:v2';
+        const OPTION_LABELS = ['A', 'B', 'C', 'D'];
+
+        const questions = [
+            { id: 'v01', section: '어휘', skill: '악기', prompt: '건반을 손가락으로 눌러 연주하는 악기는 무엇입니까?', context: '검은 건반과 흰 건반이 있습니다.', choices: ['피아노', '바이올린', '트럼펫', '드럼'], answer: 0, explain: '피아노는 건반을 눌러 연주하는 악기입니다.' },
+            { id: 'v02', section: '어휘', skill: '악기', prompt: '활로 줄을 켜서 연주하는 악기는 무엇입니까?', context: '손으로 잡고 어깨 가까이에 대고 연주합니다.', choices: ['바이올린', '피아노', '기타', '트럼펫'], answer: 0, explain: '바이올린은 활로 줄을 켜서 연주하는 악기입니다.' },
+            { id: 'v03', section: '어휘', skill: '악기', prompt: '입으로 불어서 연주하는 금관 악기는 무엇입니까?', context: '나팔처럼 생긴 악기입니다.', choices: ['트럼펫', '드럼', '기타', '피아노'], answer: 0, explain: '트럼펫은 입으로 불어서 연주하는 악기입니다.' },
+            { id: 'v04', section: '어휘', skill: '악기', prompt: '줄을 손가락이나 피크로 튕겨서 연주하는 악기는 무엇입니까?', context: '손에 들고 줄을 튕깁니다.', choices: ['기타', '트럼펫', '피아노', '드럼'], answer: 0, explain: '기타는 줄을 튕겨서 연주하는 악기입니다.' },
+            { id: 'v05', section: '어휘', skill: '악기', prompt: '채로 치거나 손으로 쳐서 연주하는 악기는 무엇입니까?', context: '여러 개의 북과 심벌즈가 함께 있습니다.', choices: ['드럼', '바이올린', '트럼펫', '기타'], answer: 0, explain: '드럼은 치면서 연주하는 악기입니다.' },
+            { id: 'v06', section: '어휘', skill: '연주 동작', prompt: '피아노를 연주할 때 알맞은 동사는 무엇입니까?', context: '건반에 손가락을 올리고 소리를 냅니다.', choices: ['누르다', '불다', '켜다', '치다'], answer: 0, explain: '피아노는 건반을 누르다라고 말할 수 있습니다.' },
+            { id: 'v07', section: '어휘', skill: '연주 동작', prompt: '트럼펫을 연주할 때 알맞은 동사는 무엇입니까?', context: '입으로 바람을 넣어 소리를 냅니다.', choices: ['불다', '누르다', '튕기다', '치다'], answer: 0, explain: '트럼펫 같은 관악기는 보통 불다와 함께 씁니다.' },
+            { id: 'v08', section: '어휘', skill: '연주 동작', prompt: '기타를 연주할 때 알맞은 동사는 무엇입니까?', context: '줄을 손가락으로 움직여 소리를 냅니다.', choices: ['튕기다', '불다', '누르다', '켜다'], answer: 0, explain: '기타는 줄을 튕기다라고 말할 수 있습니다.' },
+            { id: 'v09', section: '어휘', skill: '연주 동작', prompt: '드럼을 연주할 때 알맞은 동사는 무엇입니까?', context: '채로 두드려 소리를 냅니다.', choices: ['치다', '불다', '켜다', '튕기다'], answer: 0, explain: '드럼은 치다와 함께 쓰는 것이 자연스럽습니다.' },
+            { id: 'v10', section: '어휘', skill: '연주 동작', prompt: '바이올린을 연주할 때 알맞은 동사는 무엇입니까?', context: '활로 줄을 문질러 소리를 냅니다.', choices: ['켜다', '불다', '치다', '누르다'], answer: 0, explain: '바이올린은 켜다와 함께 씁니다.' },
+            { id: 'v11', section: '어휘', skill: '모양', prompt: '꼭짓점이 세 개 있는 모양은 무엇입니까?', context: '삼각형 모양입니다.', choices: ['세모', '네모', '동그라미', '마름모'], answer: 0, explain: '꼭짓점이 세 개 있는 모양은 세모입니다.' },
+            { id: 'v12', section: '어휘', skill: '모양', prompt: '반듯한 사각형 모양은 무엇입니까?', context: '책이나 상자처럼 각이 있는 모양입니다.', choices: ['네모', '세모', '동그라미', '마름모'], answer: 0, explain: '반듯한 사각형 모양은 네모입니다.' },
+            { id: 'v13', section: '어휘', skill: '모양', prompt: '원처럼 둥근 모양은 무엇입니까?', context: '모서리와 꼭짓점이 없습니다.', choices: ['동그라미', '세모', '네모', '마름모'], answer: 0, explain: '원처럼 둥근 모양은 동그라미입니다.' },
+            { id: 'v14', section: '어휘', skill: '모양', prompt: '네모를 비스듬히 세운 것 같은 모양은 무엇입니까?', context: '다이아몬드 모양과 비슷합니다.', choices: ['마름모', '네모', '세모', '동그라미'], answer: 0, explain: '네모를 비스듬히 세운 것 같은 모양은 마름모입니다.' },
+            { id: 'v15', section: '어휘', skill: '모양과 상태', prompt: '길이나 표면이 고르지 않고 오르내리는 상태는 무엇입니까?', context: '길이 반듯하지 않고 울퉁불퉁합니다.', choices: ['울퉁불퉁하다', '둥글다', '평평하다', '뾰족하다'], answer: 0, explain: '울퉁불퉁하다는 표면이 고르지 않고 오르내리는 상태를 말합니다.' },
+            { id: 'v16', section: '어휘', skill: '촉감', prompt: '표면이 부드럽고 걸리는 느낌이 적을 때 쓰는 말은 무엇입니까?', context: '만졌을 때 손에 잘 걸리지 않습니다.', choices: ['매끄럽다', '딱딱하다', '부드럽다', '거칠다'], answer: 0, explain: '매끄럽다는 표면이 부드럽고 손에 걸리지 않는 느낌입니다.' },
+            { id: 'v17', section: '어휘', skill: '촉감', prompt: '표면이 곱지 않고 손에 걸리는 느낌을 나타내는 말은 무엇입니까?', context: '나무껍질을 만지는 느낌과 비슷합니다.', choices: ['거칠다', '부드럽다', '딱딱하다', '평평하다'], answer: 0, explain: '거칠다는 표면이 곱지 않고 부드럽지 않은 상태를 말합니다.' },
+            { id: 'v18', section: '어휘', skill: '감정 표현', prompt: '걱정이 줄고 마음이 안정되는 느낌을 나타내는 표현은 무엇입니까?', context: '일이 잘 해결되어 마음이 가벼워졌습니다.', choices: ['마음이 편안해지다', '신이 나다', '힘이 나다', '가슴이 뛰다'], answer: 0, explain: '마음이 편안해지다는 걱정이나 긴장이 줄고 안정되는 느낌을 말합니다.' },
+            { id: 'v19', section: '어휘', skill: '감정 표현', prompt: '바쁘거나 답답한 느낌이 줄고 생각할 시간이 생긴 상태는 무엇입니까?', context: '이제 조금 천천히 생각할 수 있습니다.', choices: ['마음에 여유가 생기다', '마음이 설레다', '마음이 편안해지다', '힘이 나다'], answer: 0, explain: '마음에 여유가 생기다는 급하거나 답답한 마음이 줄고 여유가 생긴 상태입니다.' },
+            { id: 'v20', section: '어휘', skill: '감정 표현', prompt: '기대가 되어 마음이 두근거리는 느낌을 나타내는 표현은 무엇입니까?', context: '여행 전날처럼 기대되고 기분이 좋습니다.', choices: ['마음이 설레다', '가슴이 뛰다', '신이 나다', '마음이 편안해지다'], answer: 0, explain: '마음이 설레다는 기대감 때문에 마음이 두근거리는 느낌을 말합니다.' },
+
+            { id: 'g01', section: '문법', skill: 'N만 하다', prompt: '사진 속 피아노의 크기를 지금 눈앞에서 설명하려면?', context: '비교 기준: 사람 키', media: { type: 'image', src: '../assets/c16/vocabulary/images/split-variants/full/s02_bl_n07.webp', alt: '피아노', caption: '피아노 / 기준: 사람 키' }, choices: ['피아노가 사람 키만 해요.', '피아노가 사람 키만 했어요.', '피아노가 사람 키를 해요.', '피아노는 사람 키만이에요.'], answer: 0, explain: '현재 보이는 크기를 기준 명사와 비교할 때는 “사람 키만 해요”가 자연스럽습니다.' },
+            { id: 'g02', section: '문법', skill: 'N만 하다', prompt: '사진 속 바이올린의 크기를 설명하는 문장으로 알맞은 것은?', context: '비교 기준: 팔 길이', media: { type: 'image', src: '../assets/c16/vocabulary/images/split-variants/full/s02_br_n08.webp', alt: '바이올린', caption: '바이올린 / 기준: 팔 길이' }, choices: ['바이올린이 팔 길이만 해요.', '바이올린이 팔 길이만 했어요.', '바이올린이 팔 길이를 해요.', '바이올린은 팔 길이만이에요.'], answer: 0, explain: '크기 비교는 “기준 명사 + 만 하다”로 말합니다.' },
+            { id: 'g03', section: '문법', skill: 'N만 하다', prompt: '사진 속 드럼의 크기를 설명하는 문장으로 알맞은 것은?', context: '비교 기준: 작은 의자', media: { type: 'image', src: '../assets/c16/vocabulary/images/split-variants/full/s03_bl_n11.webp', alt: '드럼', caption: '드럼 / 기준: 작은 의자' }, choices: ['드럼이 작은 의자만 해요.', '드럼이 작은 의자만 했어요.', '드럼이 작은 의자로 해요.', '드럼은 작은 의자만이에요.'], answer: 0, explain: '드럼의 크기가 작은 의자 정도라면 “작은 의자만 해요”라고 말합니다.' },
+            { id: 'g04', section: '문법', skill: 'N만 하다', prompt: '사진 속 둥근 쿠션의 크기를 설명하는 문장으로 알맞은 것은?', context: '비교 기준: 접시', media: { type: 'image', src: '../assets/c16/vocabulary/shape-texture-game/circle-cushion.webp', alt: '둥근 쿠션', caption: '둥근 쿠션 / 기준: 접시' }, choices: ['쿠션이 접시만 해요.', '쿠션이 접시만 했어요.', '쿠션이 접시를 해요.', '쿠션은 접시만이에요.'], answer: 0, explain: '접시 정도의 크기라는 뜻은 “접시만 해요”로 표현합니다.' },
+            { id: 'g05', section: '문법', skill: 'N만 하다', prompt: '학생증의 크기를 손바닥과 비교해서 말하려면?', context: '비교 기준: 손바닥', media: { type: 'emoji', symbol: '💳', caption: '학생증 / 기준: 손바닥 ✋' }, choices: ['학생증이 손바닥만 해요.', '학생증이 손바닥만 했어요.', '학생증이 손바닥으로 해요.', '학생증은 손바닥만이에요.'], answer: 0, explain: '학생증의 크기를 손바닥과 비교하므로 “손바닥만 해요”가 맞습니다.' },
+
+            { id: 'g06', section: '문법', skill: 'V-(으)ㄹ 생각도 못 하다', prompt: '일이 너무 많아 캠핑을 할 엄두가 없을 때 알맞은 문장은?', context: '현재 상황입니다.', choices: ['일이 많아서 캠핑 갈 생각도 못 해요.', '일이 많아서 캠핑 갈 생각도 못 했어요.', '일이 많아서 캠핑 가는 생각도 못 해요.', '일이 많아도 캠핑 가 볼 만해요.'], answer: 0, explain: '현재 상황 때문에 시도할 엄두가 없을 때 “갈 생각도 못 해요”를 씁니다.' },
+            { id: 'g07', section: '문법', skill: 'V-(으)ㄹ 생각도 못 하다', prompt: '돈이 부족해서 악기를 배우기 어렵다고 강하게 말하려면?', context: '비용 부담 때문에 시작하기 어려움', choices: ['돈이 부족해서 악기를 배울 생각도 못 해요.', '돈이 부족해서 악기를 배운 생각도 못 해요.', '돈이 부족해서 악기를 배울 생각도 안 해요.', '돈이 부족해도 악기를 배울 만해요.'], answer: 0, explain: '배우기 어렵다는 강한 느낌은 “배울 생각도 못 해요”가 맞습니다.' },
+            { id: 'g08', section: '문법', skill: 'V-(으)ㄹ 생각도 못 하다', prompt: '너무 피곤해서 운동을 시작할 수 없었어요.', context: '과거 상황입니다.', choices: ['너무 피곤해서 운동할 생각도 못 했어요.', '너무 피곤해서 운동할 생각도 못 해요.', '너무 피곤해서 운동한 생각도 못 했어요.', '너무 피곤해도 운동해 볼 만했어요.'], answer: 0, explain: '과거 상황이므로 “못 했어요”가 필요합니다.' },
+            { id: 'g09', section: '문법', skill: 'V-(으)ㄹ 생각도 못 하다', prompt: '비가 많이 와서 등산은 엄두도 못 냈다고 말하려면?', context: '날씨 때문에 불가능했습니다.', choices: ['비가 많이 와서 등산할 생각도 못 했어요.', '비가 많이 와서 등산할 생각도 못 해요.', '비가 많이 와서 등산하는 생각도 못 했어요.', '비가 많이 왔어도 등산해 볼 만했어요.'], answer: 0, explain: '등산을 시도할 수 없었던 과거 상황이므로 “등산할 생각도 못 했어요”가 자연스럽습니다.' },
+            { id: 'g10', section: '문법', skill: 'V-(으)ㄹ 생각도 못 하다', prompt: '시험 준비 때문에 여행을 할 여유가 전혀 없어요.', context: '현재 상황입니다.', choices: ['시험 준비 때문에 여행 갈 생각도 못 해요.', '시험 준비 때문에 여행 갈 생각도 못 했어요.', '시험 준비 때문에 여행 가는 생각도 못 해요.', '시험 준비가 있어도 여행 가 볼 만해요.'], answer: 0, explain: '여행을 할 여유가 전혀 없다는 뜻으로 “갈 생각도 못 해요”를 씁니다.' },
+
+            { id: 'g11', section: '문법', skill: 'V-(으)ㄹ 만하다', prompt: '진해 벚꽃 길을 친구에게 추천하고 싶어요.', context: '현재 추천입니다.', choices: ['진해 벚꽃 길은 가 볼 만해요.', '진해 벚꽃 길은 가 볼 만했어요.', '진해 벚꽃 길은 가 볼 생각도 못 해요.', '진해 벚꽃 길은 가 보기로 유명해요.'], answer: 0, explain: '추천할 가치가 있으면 “가 볼 만해요”를 씁니다.' },
+            { id: 'g12', section: '문법', skill: 'V-(으)ㄹ 만하다', prompt: '음식이 조금 맵지만 한번 먹어 볼 가치가 있어요.', context: '부담이 있어도 기준을 충족합니다.', choices: ['이 음식은 매워도 먹어 볼 만해요.', '이 음식은 매워도 먹어 볼 만했어요.', '이 음식은 매워서 먹을 생각도 못 해요.', '이 음식은 먹어 보기로 유명해요.'], answer: 0, explain: '어느 정도 기준을 충족하면 “먹어 볼 만해요”라고 할 수 있습니다.' },
+            { id: 'g13', section: '문법', skill: 'V-(으)ㄹ 만하다', prompt: '한옥 체험을 추천하고 싶어요.', context: '현재 추천입니다.', choices: ['한옥 체험은 해 볼 만해요.', '한옥 체험은 해 볼 만했어요.', '한옥 체험은 할 생각도 못 해요.', '한옥 체험은 하기만 해요.'], answer: 0, explain: '체험을 추천할 때 “해 볼 만해요”가 자연스럽습니다.' },
+            { id: 'g14', section: '문법', skill: 'V-(으)ㄹ 만하다', prompt: '이 책은 조금 어렵지만 읽을 가치가 있어요.', context: '읽기 추천입니다.', choices: ['이 책은 어려워도 읽어 볼 만해요.', '이 책은 어려워도 읽어 볼 만했어요.', '이 책은 어려워서 읽을 생각도 못 해요.', '이 책은 읽기로 유명해요.'], answer: 0, explain: '어려워도 가치가 있으면 “읽어 볼 만해요”를 씁니다.' },
+            { id: 'g15', section: '문법', skill: 'V-(으)ㄹ 만하다', prompt: '수상 스키가 재미있어서 한번 타 보라고 권하고 싶어요.', context: '활동 추천입니다.', choices: ['수상 스키는 타 볼 만해요.', '수상 스키는 타 볼 만했어요.', '수상 스키는 탈 생각도 못 해요.', '수상 스키는 타기로 유명해요.'], answer: 0, explain: '활동을 권할 때 “타 볼 만해요”처럼 말합니다.' },
+
+            { id: 'g16', section: '문법', skill: 'A/V-기로 유명하다', prompt: '내장산은 단풍이 아름다운 것으로 잘 알려져 있어요.', context: '현재의 특징/평가입니다.', choices: ['내장산은 단풍이 아름답기로 유명해요.', '내장산은 단풍이 아름답기로 유명했어요.', '내장산은 단풍을 아름답기로 유명해요.', '내장산은 단풍이 아름다운 유명해요.'], answer: 0, explain: '특징이나 평가 내용은 “A/V-기로 유명하다”를 씁니다.' },
+            { id: 'g17', section: '문법', skill: 'N(으)로 유명하다', prompt: '전주는 대표 음식인 비빔밥으로 잘 알려져 있어요.', context: '대표 명사를 이유로 말합니다.', choices: ['전주는 비빔밥으로 유명해요.', '전주는 비빔밥으로 유명했어요.', '전주는 비빔밥을 유명해요.', '전주는 비빔밥에 유명해요.'], answer: 0, explain: '대표 명사가 이유이면 “N(으)로 유명하다”를 씁니다.' },
+            { id: 'g18', section: '문법', skill: 'A/V-기로 유명하다', prompt: '한탄강 캠핑장은 시설이 좋다는 점으로 유명해요.', context: '현재의 특징/평가입니다.', choices: ['한탄강 캠핑장은 시설이 좋기로 유명해요.', '한탄강 캠핑장은 시설이 좋기로 유명했어요.', '한탄강 캠핑장은 시설을 좋기로 유명해요.', '한탄강 캠핑장은 시설로 좋기로 유명해요.'], answer: 0, explain: '“시설이 좋다”라는 평가 내용은 “좋기로 유명해요”로 말합니다.' },
+            { id: 'g19', section: '문법', skill: 'N(으)로 유명하다', prompt: '중국을 대표하는 상징으로 만리장성을 말하고 싶어요.', context: '대표 명사를 이유로 말합니다.', choices: ['중국은 만리장성으로 유명해요.', '중국은 만리장성으로 유명했어요.', '중국은 만리장성을 유명해요.', '중국은 만리장성에 유명해요.'], answer: 0, explain: '대표 명사 “만리장성”을 이유로 말하므로 “으로 유명해요”가 맞습니다.' },
+            { id: 'g20', section: '문법', skill: 'A/V-기로 유명하다', prompt: '이 식당은 줄이 길 정도로 맛있다고 잘 알려져 있어요.', context: '현재의 특징/평가입니다.', choices: ['이 식당은 맛있기로 유명해요.', '이 식당은 맛있기로 유명했어요.', '이 식당은 맛을 있기로 유명해요.', '이 식당은 맛있기로 유명한 해요.'], answer: 0, explain: '맛있다는 평가로 유명하면 “맛있기로 유명해요”가 자연스럽습니다.' }
+        ];
+
+        let state = loadState() || createAttempt();
+        let currentId = state.questionOrder[0];
+
+        const questionList = document.getElementById('questionList');
+        const questionNav = document.getElementById('questionNav');
+        const answeredStat = document.getElementById('answeredStat');
+        const scoreStat = document.getElementById('scoreStat');
+        const totalStat = document.getElementById('totalStat');
+        const progressBar = document.getElementById('progressBar');
+        const saveBadge = document.getElementById('saveBadge');
+        const balanceStat = document.getElementById('balanceStat');
+        const attemptChip = document.getElementById('attemptChip');
+        const submitBtn = document.getElementById('submitBtn');
+        const newAttemptBtn = document.getElementById('newAttemptBtn');
+        const resumeBtn = document.getElementById('resumeBtn');
+
+        function shuffle(items) {
+            const copy = [...items];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function balancedPositions(count) {
+            const positions = [];
+            for (let i = 0; i < count; i++) positions.push(i % 4);
+            return shuffle(positions);
+        }
+
+        function createOptionOrder(question, desiredCorrectPosition) {
+            const indices = question.choices.map((_, index) => index);
+            const distractors = shuffle(indices.filter((index) => index !== question.answer));
+            const order = [];
+            for (let i = 0; i < question.choices.length; i++) {
+                order[i] = i === desiredCorrectPosition ? question.answer : distractors.shift();
+            }
+            return order;
+        }
+
+        function createAttempt() {
+            const questionOrder = questions.map((question) => question.id);
+            const positions = balancedPositions(questionOrder.length);
+            const optionOrders = {};
+            questionOrder.forEach((id, index) => {
+                const question = getQuestion(id);
+                optionOrders[id] = createOptionOrder(question, positions[index]);
+            });
+            return {
+                version: 1,
+                attemptId: Date.now().toString(36),
+                startedAt: Date.now(),
+                updatedAt: Date.now(),
+                submitted: false,
+                questionOrder,
+                optionOrders,
+                answers: {}
+            };
+        }
+
+        function getQuestion(id) {
+            return questions.find((question) => question.id === id);
+        }
+
+        function validState(candidate) {
+            if (!candidate || candidate.version !== 1) return false;
+            if (!Array.isArray(candidate.questionOrder) || candidate.questionOrder.length !== questions.length) return false;
+            return candidate.questionOrder.every((id) => getQuestion(id) && Array.isArray(candidate.optionOrders?.[id]));
+        }
+
+        function loadState() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (!saved) return null;
+                const parsed = JSON.parse(saved);
+                return validState(parsed) ? parsed : null;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveState() {
+            state.updatedAt = Date.now();
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                saveBadge.className = 'badge is-save';
+                saveBadge.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> 자동저장됨';
+            } catch (error) {
+                saveBadge.className = 'badge is-warn';
+                saveBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> 저장 실패';
+            }
+        }
+
+        function correctOptionPosition(id) {
+            const question = getQuestion(id);
+            return state.optionOrders[id].findIndex((choiceIndex) => choiceIndex === question.answer);
+        }
+
+        function correctDistribution() {
+            const counts = [0, 0, 0, 0];
+            state.questionOrder.forEach((id) => {
+                counts[correctOptionPosition(id)] += 1;
+            });
+            return counts;
+        }
+
+        function answeredCount() {
+            return Object.keys(state.answers).filter((id) => state.answers[id] !== undefined).length;
+        }
+
+        function score() {
+            return state.questionOrder.reduce((sum, id) => {
+                const question = getQuestion(id);
+                return sum + (state.answers[id] === question.answer ? 1 : 0);
+            }, 0);
+        }
+
+        function renderMedia(question) {
+            if (!question.media) return '';
+            const caption = question.media.caption || '';
+            const visual = question.media.type === 'image'
+                ? `<img src="${question.media.src}" alt="${question.media.alt || caption}" />`
+                : `<div class="q-media__emoji" aria-hidden="true">${question.media.symbol}</div>`;
+            return `
+                <figure class="q-media">
+                    ${visual}
+                    <figcaption>${caption}</figcaption>
+                </figure>
+            `;
+        }
+
+        function selectAnswer(id, choiceIndex) {
+            if (state.submitted) return;
+            state.answers[id] = choiceIndex;
+            currentId = id;
+            saveState();
+            render();
+        }
+
+        function submitExam() {
+            state.submitted = true;
+            saveState();
+            render();
+            const firstWrong = state.questionOrder.find((id) => state.answers[id] !== getQuestion(id).answer);
+            if (firstWrong) scrollToQuestion(firstWrong);
+        }
+
+        function newAttempt() {
+            state = createAttempt();
+            currentId = state.questionOrder[0];
+            saveState();
+            render();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function restoreAttempt() {
+            state = loadState() || createAttempt();
+            currentId = state.questionOrder.find((id) => state.answers[id] === undefined) || state.questionOrder[0];
+            render();
+            scrollToQuestion(currentId);
+        }
+
+        function scrollToQuestion(id) {
+            document.getElementById(`q-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function renderStats() {
+            const answered = answeredCount();
+            const total = questions.length;
+            totalStat.textContent = total;
+            answeredStat.textContent = answered;
+            scoreStat.textContent = state.submitted ? `${score()} / ${total}` : '-';
+            progressBar.style.setProperty('--value', `${Math.round(answered / total * 100)}%`);
+            balanceStat.textContent = correctDistribution().join('/');
+            attemptChip.textContent = `저장 ${new Date(state.updatedAt).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}`;
+            submitBtn.disabled = answered < total;
+        }
+
+        function optionClass(id, choiceIndex) {
+            const question = getQuestion(id);
+            const selected = state.answers[id] === choiceIndex;
+            if (!state.submitted) return selected ? 'is-selected' : '';
+            if (choiceIndex === question.answer) return 'is-correct';
+            if (selected) return 'is-wrong';
+            return '';
+        }
+
+        function renderQuestions() {
+            questionList.innerHTML = state.questionOrder.map((id, index) => {
+                const question = getQuestion(id);
+                const selected = state.answers[id];
+                const isCurrent = currentId === id;
+                const feedbackVisible = state.submitted ? 'is-visible' : '';
+                return `
+                    <article class="question-card panel ${isCurrent ? 'is-current' : ''}" id="q-${id}">
+                        <div class="q-head">
+                            <span class="q-number">${index + 1}</span>
+                            <span class="badge">${question.section}</span>
+                            <span class="chip">${question.skill}</span>
+                        </div>
+                        <p class="q-prompt">${question.prompt}</p>
+                        <p class="q-context">${question.context}</p>
+                        ${renderMedia(question)}
+                        <div class="options">
+                            ${state.optionOrders[id].map((choiceIndex, optionIndex) => `
+                                <button class="option ${optionClass(id, choiceIndex)}" type="button" data-question="${id}" data-choice="${choiceIndex}">
+                                    <strong>${OPTION_LABELS[optionIndex]}</strong>
+                                    <span>${question.choices[choiceIndex]}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                        <div class="feedback ${feedbackVisible}">
+                            ${selected === question.answer ? '정답입니다.' : `정답: ${question.choices[question.answer]}`} ${question.explain}
+                        </div>
+                    </article>
+                `;
+            }).join('');
+
+            questionList.querySelectorAll('[data-question]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    selectAnswer(button.dataset.question, Number(button.dataset.choice));
+                });
+            });
+        }
+
+        function renderNav() {
+            questionNav.innerHTML = state.questionOrder.map((id, index) => {
+                const question = getQuestion(id);
+                const answered = state.answers[id] !== undefined;
+                const wrong = state.submitted && state.answers[id] !== question.answer;
+                return `
+                    <button class="nav-dot ${answered ? 'is-answered' : ''} ${currentId === id ? 'is-current' : ''} ${wrong ? 'is-wrong' : ''}" type="button" data-jump="${id}">
+                        ${index + 1}
+                    </button>
+                `;
+            }).join('');
+
+            questionNav.querySelectorAll('[data-jump]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    currentId = button.dataset.jump;
+                    render();
+                    scrollToQuestion(currentId);
+                });
+            });
+
+            questionNav.querySelector('.is-current')?.scrollIntoView({ block: 'nearest', inline: 'center' });
+        }
+
+        function render() {
+            renderStats();
+            renderQuestions();
+            renderNav();
+            saveBadge.innerHTML = state.submitted
+                ? '<i class="fa-solid fa-lock"></i> 채점 완료'
+                : '<i class="fa-solid fa-cloud-arrow-up"></i> 자동저장됨';
+        }
+
+        submitBtn.addEventListener('click', submitExam);
+        newAttemptBtn.addEventListener('click', newAttempt);
+        resumeBtn.addEventListener('click', restoreAttempt);
+
+        saveState();
+        render();
+    </script>
+    <script src="../shared/site-copyright.js"></script>
+</body>
+</html>
