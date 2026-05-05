@@ -6,7 +6,7 @@
     <title>학생 슬라이드 제작기</title>
     <meta
       name="description"
-      content="브라우저에서 발표 슬라이드를 만들고 단일 HTML 파일로 내보내는 학생용 슬라이드 제작기"
+      content="여러 이미지를 첨부하면 발표용 HTML 슬라이드로 자동 정리하는 학생용 제작기"
     >
     <link rel="stylesheet" href="styles.css">
   </head>
@@ -23,7 +23,7 @@
         <span class="brand-mark" aria-hidden="true">S</span>
         <div>
           <h1>학생 슬라이드 제작기</h1>
-          <p>HTML 발표 자료 만들기</p>
+          <p>사진을 넣으면 발표 슬라이드로 자동 정리 · <span id="autosaveIndicator">자동저장 준비</span></p>
         </div>
       </div>
 
@@ -38,7 +38,7 @@
           <span class="icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><path d="M7 3v7h8"></path><path d="M7 21v-7h10v7"></path></svg>
           </span>
-          <span>프로젝트</span>
+          <span>저장</span>
         </button>
         <button class="button secondary" id="presentButton" type="button">
           <span class="icon" aria-hidden="true">
@@ -55,36 +55,41 @@
       </div>
     </header>
 
-    <main class="builder" aria-label="슬라이드 제작 화면">
-      <aside class="slide-rail" aria-label="슬라이드 목록">
+    <main class="studio" aria-label="이미지 슬라이드 제작 화면">
+      <section class="upload-panel">
         <div class="panel-heading">
           <div>
-            <h2>슬라이드</h2>
+            <h2>이미지 넣기</h2>
             <p id="slideCount">0장</p>
           </div>
-          <button class="icon-button" id="addSlideButton" type="button" aria-label="슬라이드 추가">
+          <button class="icon-button" id="clearButton" type="button" aria-label="전체 비우기">
             <span class="icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
+              <svg viewBox="0 0 24 24"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path></svg>
             </span>
           </button>
         </div>
-        <ol class="slide-list" id="slideList"></ol>
-      </aside>
 
-      <section class="stage-panel" aria-label="슬라이드 미리보기">
-        <div class="project-strip">
-          <label class="field compact">
+        <label class="dropzone" id="dropzone">
+          <input id="imageFilesInput" type="file" accept="image/*" multiple>
+          <span class="drop-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
+          </span>
+          <strong>이미지를 여러 장 선택하세요</strong>
+          <span>사진 중심 슬라이드가 자동 생성됩니다.</span>
+        </label>
+
+        <ol class="image-list" id="slideList" aria-label="이미지 슬라이드 순서"></ol>
+      </section>
+
+      <section class="preview-panel" aria-label="슬라이드 미리보기">
+        <div class="project-row">
+          <label class="field">
             <span>발표 제목</span>
             <input id="projectTitleInput" type="text" autocomplete="off">
           </label>
-          <label class="field compact">
-            <span>테마</span>
-            <select id="themeInput">
-              <option value="paper">Paper</option>
-              <option value="mint">Mint</option>
-              <option value="coral">Coral</option>
-              <option value="night">Night</option>
-            </select>
+          <label class="field">
+            <span>발표자</span>
+            <input id="presenterNameInput" type="text" autocomplete="off">
           </label>
         </div>
 
@@ -92,7 +97,7 @@
           <div class="slide-preview" id="slidePreview" aria-live="polite"></div>
         </div>
 
-        <div class="stage-actions">
+        <div class="slide-actions">
           <button class="button ghost" id="moveUpButton" type="button">
             <span class="icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M12 19V5"></path><path d="M5 12l7-7 7 7"></path></svg>
@@ -105,12 +110,6 @@
             </span>
             <span>뒤로</span>
           </button>
-          <button class="button ghost" id="duplicateSlideButton" type="button">
-            <span class="icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"></rect><path d="M5 16H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            </span>
-            <span>복제</span>
-          </button>
           <button class="button danger" id="deleteSlideButton" type="button">
             <span class="icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path></svg>
@@ -120,62 +119,69 @@
         </div>
       </section>
 
-      <aside class="inspector" aria-label="선택한 슬라이드 편집">
+      <aside class="edit-panel" aria-label="선택한 이미지 슬라이드 편집">
         <div class="panel-heading">
           <div>
-            <h2>편집</h2>
-            <p id="selectedSlideLabel">1번 슬라이드</p>
+            <h2>간단 편집</h2>
+            <p id="selectedSlideLabel">이미지를 넣어 주세요</p>
           </div>
         </div>
 
         <label class="field">
+          <span>슬라이드 제목</span>
+          <input id="slideTitleInput" type="text" autocomplete="off">
+        </label>
+
+        <label class="field">
           <span>레이아웃</span>
           <select id="layoutInput">
-            <option value="title">제목</option>
-            <option value="text">본문</option>
-            <option value="split">글 + 이미지</option>
-            <option value="image">이미지 중심</option>
-            <option value="quote">인용</option>
+            <option value="focus">사진만</option>
+            <option value="grid">사진 격자</option>
+            <option value="split">사진 + 설명</option>
+            <option value="caption">큰 사진 + 하단 제목</option>
+            <option value="strip">사진 묶음</option>
           </select>
         </label>
 
-        <label class="field">
-          <span>작은 제목</span>
-          <input id="kickerInput" type="text" autocomplete="off">
-        </label>
+        <div class="field-grid">
+          <label class="field">
+            <span>사진 배치</span>
+            <select id="photoArrangeInput">
+              <option value="auto">자동</option>
+              <option value="hero">첫 사진 크게</option>
+              <option value="grid">격자</option>
+              <option value="row">가로</option>
+              <option value="column">세로</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>사진 맞춤</span>
+            <select id="photoFitInput">
+              <option value="contain">전체 보이기</option>
+              <option value="cover">가득 채우기</option>
+            </select>
+          </label>
+        </div>
 
         <label class="field">
-          <span>큰 제목</span>
-          <input id="titleInput" type="text" autocomplete="off">
+          <span>이 슬라이드에 사진 추가</span>
+          <input id="slideImagesInput" type="file" accept="image/*" multiple>
         </label>
+
+        <div class="slide-photo-list" id="slidePhotoList" aria-label="현재 슬라이드 사진 목록"></div>
 
         <label class="field">
-          <span>본문</span>
-          <textarea id="bodyInput" rows="9"></textarea>
+          <span>짧은 설명</span>
+          <textarea id="captionInput" rows="5"></textarea>
         </label>
-
-        <label class="field">
-          <span>이미지</span>
-          <input id="imageInput" type="file" accept="image/*">
-        </label>
-
-        <label class="field">
-          <span>이미지 설명</span>
-          <input id="imageAltInput" type="text" autocomplete="off">
-        </label>
-
-        <button class="button ghost full-width" id="removeImageButton" type="button">
-          <span class="icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg>
-          </span>
-          <span>이미지 제거</span>
-        </button>
 
         <label class="field">
           <span>발표 메모</span>
-          <textarea id="notesInput" rows="5"></textarea>
+          <textarea id="notesInput" rows="4"></textarea>
         </label>
 
+        <p class="helper">이미지는 자동으로 크기를 줄이고, 사진 색을 바탕으로 슬라이드 분위기를 맞춥니다.</p>
         <p class="status" id="status" aria-live="polite"></p>
       </aside>
     </main>

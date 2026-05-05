@@ -1,53 +1,82 @@
-const STORAGE_KEY = "student-slide-studio-project-v1";
-const THEMES = new Set(["paper", "mint", "coral", "night"]);
-const LAYOUTS = new Set(["title", "text", "split", "image", "quote"]);
+const STORAGE_KEY = "student-image-slide-studio-v2";
+const STORAGE_META_KEY = "student-image-slide-studio-meta-v2";
+const LEGACY_STORAGE_KEY = "student-slide-studio-project-v1";
+const AUTOSAVE_DB_NAME = "student-slide-studio-autosave";
+const AUTOSAVE_STORE_NAME = "projects";
+const AUTOSAVE_RECORD_ID = "current";
+const AUTOSAVE_DELAY = 500;
+const MAX_IMAGE_SIDE = 1800;
+const IMAGE_QUALITY = 0.86;
+const LAYOUTS = new Set(["focus", "grid", "split", "caption", "strip"]);
+const PHOTO_ARRANGEMENTS = new Set(["auto", "hero", "grid", "row", "column"]);
+const PHOTO_FITS = new Set(["contain", "cover"]);
 
 const elements = {
-  addSlideButton: document.getElementById("addSlideButton"),
-  bodyInput: document.getElementById("bodyInput"),
+  autosaveIndicator: document.getElementById("autosaveIndicator"),
+  captionInput: document.getElementById("captionInput"),
+  clearButton: document.getElementById("clearButton"),
   closePresenterButton: document.getElementById("closePresenterButton"),
   deleteSlideButton: document.getElementById("deleteSlideButton"),
-  duplicateSlideButton: document.getElementById("duplicateSlideButton"),
+  dropzone: document.getElementById("dropzone"),
   exportButton: document.getElementById("exportButton"),
-  imageAltInput: document.getElementById("imageAltInput"),
-  imageInput: document.getElementById("imageInput"),
+  imageFilesInput: document.getElementById("imageFilesInput"),
   importButton: document.getElementById("importButton"),
   importProjectInput: document.getElementById("importProjectInput"),
-  kickerInput: document.getElementById("kickerInput"),
   layoutInput: document.getElementById("layoutInput"),
   moveDownButton: document.getElementById("moveDownButton"),
   moveUpButton: document.getElementById("moveUpButton"),
   notesInput: document.getElementById("notesInput"),
+  photoArrangeInput: document.getElementById("photoArrangeInput"),
+  photoFitInput: document.getElementById("photoFitInput"),
   presentButton: document.getElementById("presentButton"),
   presentNextButton: document.getElementById("presentNextButton"),
   presentPrevButton: document.getElementById("presentPrevButton"),
   presenter: document.getElementById("presenter"),
   presenterCounter: document.getElementById("presenterCounter"),
+  presenterNameInput: document.getElementById("presenterNameInput"),
   presenterStage: document.getElementById("presenterStage"),
   projectTitleInput: document.getElementById("projectTitleInput"),
-  removeImageButton: document.getElementById("removeImageButton"),
   saveProjectButton: document.getElementById("saveProjectButton"),
   selectedSlideLabel: document.getElementById("selectedSlideLabel"),
   slideCount: document.getElementById("slideCount"),
   slideList: document.getElementById("slideList"),
+  slideImagesInput: document.getElementById("slideImagesInput"),
+  slidePhotoList: document.getElementById("slidePhotoList"),
   slidePreview: document.getElementById("slidePreview"),
-  status: document.getElementById("status"),
-  themeInput: document.getElementById("themeInput"),
-  titleInput: document.getElementById("titleInput")
+  slideTitleInput: document.getElementById("slideTitleInput"),
+  status: document.getElementById("status")
 };
 
-let state = loadProject();
-let selectedId = state.slides[0].id;
+let state = normalizeProject({});
+let selectedId = null;
 let presenterIndex = 0;
 let presentationSession = 0;
+let autosaveReady = false;
+let autosaveTimer = null;
+let autosaveInFlight = false;
+let autosavePending = false;
+let lastSavedJson = "";
+let statusTimer = null;
 
-renderAll();
 bindEvents();
+init();
+
+async function init() {
+  setAutosaveIndicator("자동저장 불러오는 중");
+  setStatus("자동저장된 작업을 불러오는 중입니다...");
+  state = await loadProject();
+  selectedId = state.slides[0]?.id || null;
+  lastSavedJson = JSON.stringify(state);
+  autosaveReady = true;
+  renderAll();
+  const message = state.slides.length ? "자동저장된 작업을 불러왔습니다." : "이미지를 넣으면 자동저장됩니다.";
+  setAutosaveIndicator(state.slides.length ? "자동저장됨" : "자동저장 준비");
+  setStatus(message);
+}
 
 function bindEvents() {
-  elements.addSlideButton.addEventListener("click", addSlide);
+  elements.clearButton.addEventListener("click", clearSlides);
   elements.deleteSlideButton.addEventListener("click", deleteSelectedSlide);
-  elements.duplicateSlideButton.addEventListener("click", duplicateSelectedSlide);
   elements.exportButton.addEventListener("click", exportDeck);
   elements.importButton.addEventListener("click", () => elements.importProjectInput.click());
   elements.moveDownButton.addEventListener("click", () => moveSelectedSlide(1));
@@ -56,11 +85,19 @@ function bindEvents() {
   elements.presentNextButton.addEventListener("click", () => movePresenter(1));
   elements.presentPrevButton.addEventListener("click", () => movePresenter(-1));
   elements.closePresenterButton.addEventListener("click", closePresentation);
-  elements.removeImageButton.addEventListener("click", removeSelectedImage);
   elements.saveProjectButton.addEventListener("click", saveProjectFile);
 
+  elements.imageFilesInput.addEventListener("change", async (event) => {
+    await addImageFiles(event.target.files);
+    elements.imageFilesInput.value = "";
+  });
+
+  elements.slideImagesInput.addEventListener("change", async (event) => {
+    await addImagesToSelectedSlide(event.target.files);
+    elements.slideImagesInput.value = "";
+  });
+
   elements.importProjectInput.addEventListener("change", importProjectFile);
-  elements.imageInput.addEventListener("change", addImageToSelectedSlide);
 
   elements.projectTitleInput.addEventListener("input", () => {
     state.title = elements.projectTitleInput.value;
@@ -68,26 +105,35 @@ function bindEvents() {
     renderPreview();
   });
 
-  elements.themeInput.addEventListener("change", () => {
-    state.theme = safeTheme(elements.themeInput.value);
+  elements.presenterNameInput.addEventListener("input", () => {
+    state.presenter = elements.presenterNameInput.value;
     saveState();
     renderPreview();
   });
 
-  elements.layoutInput.addEventListener("change", () => {
-    updateSelectedSlide({ layout: safeLayout(elements.layoutInput.value) });
+  elements.slideTitleInput.addEventListener("input", () => updateSelectedSlide({ title: elements.slideTitleInput.value }));
+  elements.layoutInput.addEventListener("change", () => updateSelectedSlide({ layout: safeLayout(elements.layoutInput.value) }));
+  elements.photoArrangeInput.addEventListener("change", () => updateSelectedSlide({ arrangement: safeArrangement(elements.photoArrangeInput.value) }));
+  elements.photoFitInput.addEventListener("change", () => updateSelectedSlide({ fit: safeFit(elements.photoFitInput.value) }));
+  elements.captionInput.addEventListener("input", () => updateSelectedSlide({ caption: elements.captionInput.value }));
+  elements.notesInput.addEventListener("input", () => updateSelectedSlide({ notes: elements.notesInput.value }));
+
+  ["dragenter", "dragover"].forEach((eventName) => {
+    elements.dropzone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      elements.dropzone.classList.add("is-dragging");
+    });
   });
 
-  elements.kickerInput.addEventListener("input", () => updateSelectedSlide({ kicker: elements.kickerInput.value }, false));
-  elements.titleInput.addEventListener("input", () => updateSelectedSlide({ title: elements.titleInput.value }, false));
-  elements.bodyInput.addEventListener("input", () => updateSelectedSlide({ body: elements.bodyInput.value }, false));
-  elements.notesInput.addEventListener("input", () => updateSelectedSlide({ notes: elements.notesInput.value }, false));
-  elements.imageAltInput.addEventListener("input", () => {
-    const slide = getSelectedSlide();
-    if (!slide.image) return;
-    slide.image.alt = elements.imageAltInput.value;
-    saveState();
-    renderPreview();
+  ["dragleave", "drop"].forEach((eventName) => {
+    elements.dropzone.addEventListener(eventName, () => {
+      elements.dropzone.classList.remove("is-dragging");
+    });
+  });
+
+  elements.dropzone.addEventListener("drop", async (event) => {
+    event.preventDefault();
+    await addImageFiles(event.dataTransfer.files);
   });
 
   document.addEventListener("keydown", (event) => {
@@ -110,101 +156,170 @@ function bindEvents() {
       movePresenter(-1);
     }
   });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") flushAutosave();
+  });
+
+  window.addEventListener("pagehide", () => {
+    flushAutosave();
+  });
 }
 
-function loadProject() {
+async function loadProject() {
+  const indexedProject = await readIndexedProject();
+  const saved = indexedProject || readStoredProject(STORAGE_KEY) || readStoredProject(LEGACY_STORAGE_KEY);
+  return normalizeProject(saved || {});
+}
+
+function readStoredProject(key) {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) return normalizeProject(JSON.parse(saved));
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : null;
   } catch (error) {
     console.warn("Could not load saved slide project.", error);
+    return null;
   }
-
-  return createDefaultProject();
 }
 
-function createDefaultProject() {
-  return normalizeProject({
-    title: "나의 발표",
-    theme: "paper",
-    slides: [
-      {
-        layout: "title",
-        kicker: "한국어 발표",
-        title: "나의 발표 제목",
-        body: "이름 / 반 / 날짜",
-        notes: ""
-      },
-      {
-        layout: "text",
-        kicker: "순서",
-        title: "오늘 이야기할 것",
-        body: "- 첫 번째 내용\n- 두 번째 내용\n- 마지막 생각",
-        notes: ""
-      },
-      {
-        layout: "split",
-        kicker: "자료",
-        title: "사진과 함께 설명하기",
-        body: "핵심 문장을 짧게 쓰고 발표할 때 자세히 설명합니다.",
-        notes: ""
-      },
-      {
-        layout: "quote",
-        kicker: "마무리",
-        title: "끝",
-        body: "들어 주셔서 감사합니다.",
-        notes: ""
+async function readIndexedProject() {
+  try {
+    const db = await openAutosaveDb();
+    const record = await readAutosaveRecord(db);
+    db.close();
+    return record?.project || null;
+  } catch (error) {
+    console.warn("Could not load IndexedDB autosave.", error);
+    return null;
+  }
+}
+
+function openAutosaveDb() {
+  return new Promise((resolve, reject) => {
+    if (!window.indexedDB) {
+      reject(new Error("IndexedDB is not available."));
+      return;
+    }
+
+    const request = indexedDB.open(AUTOSAVE_DB_NAME, 1);
+    request.addEventListener("upgradeneeded", () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(AUTOSAVE_STORE_NAME)) {
+        db.createObjectStore(AUTOSAVE_STORE_NAME, { keyPath: "id" });
       }
-    ]
+    });
+    request.addEventListener("success", () => resolve(request.result));
+    request.addEventListener("error", () => reject(request.error));
+  });
+}
+
+function readAutosaveRecord(db) {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(AUTOSAVE_STORE_NAME, "readonly");
+    const store = transaction.objectStore(AUTOSAVE_STORE_NAME);
+    const request = store.get(AUTOSAVE_RECORD_ID);
+    request.addEventListener("success", () => resolve(request.result || null));
+    request.addEventListener("error", () => reject(request.error));
   });
 }
 
 function normalizeProject(project) {
-  const normalizedSlides = Array.isArray(project?.slides)
-    ? project.slides.map(normalizeSlide)
+  const slides = Array.isArray(project?.slides)
+    ? project.slides.map(normalizeSlide).filter((slide) => slide.images.length)
     : [];
-
-  if (!normalizedSlides.length) {
-    normalizedSlides.push(createSlide({ title: "새 발표", layout: "title" }));
-  }
 
   return {
     title: typeof project?.title === "string" ? project.title : "나의 발표",
-    theme: safeTheme(project?.theme),
-    slides: normalizedSlides
+    presenter: typeof project?.presenter === "string" ? project.presenter : "",
+    slides
   };
 }
 
 function normalizeSlide(slide) {
-  const image = slide?.image?.src
-    ? {
-        src: String(slide.image.src),
-        alt: typeof slide.image.alt === "string" ? slide.image.alt : ""
-      }
-    : null;
+  const images = normalizeImages(slide);
 
   return {
     id: typeof slide?.id === "string" && slide.id ? slide.id : createId(),
+    title: typeof slide?.title === "string" ? slide.title : "사진",
     layout: safeLayout(slide?.layout),
-    kicker: typeof slide?.kicker === "string" ? slide.kicker : "",
-    title: typeof slide?.title === "string" ? slide.title : "새 슬라이드",
-    body: typeof slide?.body === "string" ? slide.body : "",
-    image,
-    notes: typeof slide?.notes === "string" ? slide.notes : ""
+    arrangement: safeArrangement(slide?.arrangement),
+    fit: safeFit(slide?.fit),
+    caption: typeof slide?.caption === "string" ? slide.caption : typeof slide?.body === "string" ? slide.body : "",
+    notes: typeof slide?.notes === "string" ? slide.notes : "",
+    accent: normalizeAccent(slide?.accent || blendImageAccents(images)),
+    images
   };
 }
 
-function createSlide(overrides = {}) {
-  return normalizeSlide({
-    id: createId(),
-    layout: "text",
-    kicker: "",
-    title: "새 슬라이드",
-    body: "여기에 내용을 씁니다.",
-    notes: "",
-    ...overrides
-  });
+function normalizeImages(slide) {
+  const sourceImages = Array.isArray(slide?.images) ? slide.images : [];
+  const legacyImages = slide?.image?.src ? [slide.image] : [];
+  return [...sourceImages, ...legacyImages]
+    .map(normalizeImage)
+    .filter((image) => image.src);
+}
+
+function normalizeImage(image) {
+  return {
+    src: image?.src ? String(image.src) : "",
+    alt: typeof image?.alt === "string" ? image.alt : "",
+    name: typeof image?.name === "string" ? image.name : "",
+    width: Number(image?.width) || 0,
+    height: Number(image?.height) || 0,
+    accent: normalizeAccent(image?.accent)
+  };
+}
+
+function normalizeAccent(accent) {
+  if (
+    accent &&
+    Number.isFinite(accent.r) &&
+    Number.isFinite(accent.g) &&
+    Number.isFinite(accent.b)
+  ) {
+    return {
+      r: clampColor(accent.r),
+      g: clampColor(accent.g),
+      b: clampColor(accent.b)
+    };
+  }
+
+  return { r: 15, g: 118, b: 110 };
+}
+
+function clampColor(value) {
+  return Math.max(0, Math.min(255, Math.round(value)));
+}
+
+function safeLayout(layout) {
+  return LAYOUTS.has(layout) ? layout : "focus";
+}
+
+function safeArrangement(arrangement) {
+  return PHOTO_ARRANGEMENTS.has(arrangement) ? arrangement : "auto";
+}
+
+function safeFit(fit) {
+  return PHOTO_FITS.has(fit) ? fit : "contain";
+}
+
+function blendImageAccents(images) {
+  if (!images.length) return { r: 15, g: 118, b: 110 };
+  const sum = images.reduce(
+    (total, image) => {
+      const accent = normalizeAccent(image.accent);
+      total.r += accent.r;
+      total.g += accent.g;
+      total.b += accent.b;
+      return total;
+    },
+    { r: 0, g: 0, b: 0 }
+  );
+  return {
+    r: sum.r / images.length,
+    g: sum.g / images.length,
+    b: sum.b / images.length
+  };
 }
 
 function createId() {
@@ -212,63 +327,331 @@ function createId() {
   return `slide-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-function safeTheme(theme) {
-  return THEMES.has(theme) ? theme : "paper";
+function saveState(options = {}) {
+  if (!autosaveReady) return Promise.resolve();
+  if (options.immediate) return flushAutosave();
+  scheduleAutosave();
+  return Promise.resolve();
 }
 
-function safeLayout(layout) {
-  return LAYOUTS.has(layout) ? layout : "text";
+function scheduleAutosave() {
+  autosavePending = true;
+  setAutosaveIndicator("자동저장 중...");
+  window.clearTimeout(autosaveTimer);
+  autosaveTimer = window.setTimeout(flushAutosave, AUTOSAVE_DELAY);
 }
 
-function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+async function flushAutosave() {
+  if (!autosaveReady) return;
+
+  window.clearTimeout(autosaveTimer);
+  autosaveTimer = null;
+
+  const snapshot = JSON.parse(JSON.stringify(state));
+  const serialized = JSON.stringify(snapshot);
+  if (serialized === lastSavedJson && !autosavePending) return;
+
+  if (autosaveInFlight) {
+    autosavePending = true;
+    return;
+  }
+
+  autosaveInFlight = true;
+  autosavePending = false;
+  setAutosaveIndicator("자동저장 중...");
+
+  try {
+    await persistProject(snapshot, serialized);
+    lastSavedJson = serialized;
+    const time = formatTime(new Date());
+    setAutosaveIndicator(`자동저장됨 ${time}`);
+    setStatus(`자동저장됨 ${time}`, { temporary: true });
+  } catch (error) {
+    console.warn("Could not autosave project.", error);
+    setAutosaveIndicator("자동저장 실패");
+    setStatus("자동저장 실패: 저장 버튼으로 프로젝트 파일을 받아 두세요.");
+  } finally {
+    autosaveInFlight = false;
+    if (autosavePending) scheduleAutosave();
+  }
+}
+
+async function persistProject(project, serialized) {
+  try {
+    await writeIndexedProject(project);
+    localStorage.setItem(
+      STORAGE_META_KEY,
+      JSON.stringify({
+        title: project.title,
+        presenter: project.presenter,
+        slideCount: project.slides.length,
+        savedAt: Date.now()
+      })
+    );
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (error) {
+    console.warn("IndexedDB autosave failed; trying localStorage fallback.", error);
+    localStorage.setItem(STORAGE_KEY, serialized);
+  }
+}
+
+async function writeIndexedProject(project) {
+  const db = await openAutosaveDb();
+  try {
+    await writeAutosaveRecord(db, {
+      id: AUTOSAVE_RECORD_ID,
+      savedAt: Date.now(),
+      project
+    });
+  } finally {
+    db.close();
+  }
+}
+
+function writeAutosaveRecord(db, record) {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(AUTOSAVE_STORE_NAME, "readwrite");
+    const store = transaction.objectStore(AUTOSAVE_STORE_NAME);
+    store.put(record);
+    transaction.addEventListener("complete", resolve);
+    transaction.addEventListener("error", () => reject(transaction.error));
+    transaction.addEventListener("abort", () => reject(transaction.error));
+  });
+}
+
+function formatTime(date) {
+  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
 }
 
 function getSelectedIndex() {
+  if (!state.slides.length) return -1;
   const index = state.slides.findIndex((slide) => slide.id === selectedId);
   return index === -1 ? 0 : index;
 }
 
 function getSelectedSlide() {
   const index = getSelectedIndex();
+  if (index === -1) return null;
   selectedId = state.slides[index].id;
   return state.slides[index];
 }
 
-function renderAll() {
-  const slide = getSelectedSlide();
-  elements.projectTitleInput.value = state.title;
-  elements.themeInput.value = state.theme;
-  elements.layoutInput.value = slide.layout;
-  elements.kickerInput.value = slide.kicker;
-  elements.titleInput.value = slide.title;
-  elements.bodyInput.value = slide.body;
-  elements.notesInput.value = slide.notes;
-  elements.imageAltInput.value = slide.image?.alt || "";
-  elements.imageInput.value = "";
+async function addImageFiles(fileList) {
+  const files = Array.from(fileList || []).filter((file) => file.type.startsWith("image/"));
+  if (!files.length) {
+    setStatus("이미지 파일을 선택해 주세요.");
+    return;
+  }
 
+  setStatus(`${files.length}장의 이미지를 슬라이드로 만드는 중입니다...`);
+  const newSlides = [];
+
+  for (const file of files) {
+    try {
+      const slideNumber = state.slides.length + newSlides.length + 1;
+      const fallbackTitle = `사진 ${slideNumber}`;
+      const processed = await processImageFile(file);
+      newSlides.push({
+        id: createId(),
+        title: fallbackTitle,
+        layout: "focus",
+        arrangement: "auto",
+        fit: "contain",
+        caption: "",
+        notes: "",
+        accent: processed.accent,
+        images: [{
+          src: processed.src,
+          alt: titleFromFileName(file.name, slideNumber),
+          name: file.name,
+          width: processed.width,
+          height: processed.height,
+          accent: processed.accent
+        }]
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  if (!newSlides.length) {
+    setStatus("이미지를 처리하지 못했습니다. 다른 이미지 파일로 다시 시도해 주세요.");
+    return;
+  }
+
+  state.slides.push(...newSlides);
+  selectedId = newSlides[0].id;
+  await saveState({ immediate: true });
+  renderAll();
+  setStatus(`${newSlides.length}장의 슬라이드를 만들었습니다.`);
+}
+
+async function addImagesToSelectedSlide(fileList) {
+  const slide = getSelectedSlide();
+  if (!slide) {
+    setStatus("먼저 왼쪽에서 이미지를 넣어 슬라이드를 만들어 주세요.");
+    return;
+  }
+
+  const files = Array.from(fileList || []).filter((file) => file.type.startsWith("image/"));
+  if (!files.length) {
+    setStatus("추가할 이미지 파일을 선택해 주세요.");
+    return;
+  }
+
+  setStatus(`${files.length}장의 사진을 현재 슬라이드에 추가하는 중입니다...`);
+  const additions = [];
+
+  for (const file of files) {
+    try {
+      const processed = await processImageFile(file);
+      additions.push({
+        src: processed.src,
+        alt: titleFromFileName(file.name, slide.images.length + additions.length + 1),
+        name: file.name,
+        width: processed.width,
+        height: processed.height,
+        accent: processed.accent
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  if (!additions.length) {
+    setStatus("사진을 추가하지 못했습니다. 다른 이미지 파일로 다시 시도해 주세요.");
+    return;
+  }
+
+  slide.images.push(...additions);
+  slide.accent = blendImageAccents(slide.images);
+  await saveState({ immediate: true });
+  renderAll();
+  setStatus(`현재 슬라이드에 사진 ${additions.length}장을 추가했습니다.`);
+}
+
+function titleFromFileName(fileName, fallbackNumber) {
+  const raw = String(fileName || "")
+    .replace(/\.[^.]+$/, "")
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return raw || `사진 ${fallbackNumber}`;
+}
+
+async function processImageFile(file) {
+  const original = await readFileAsDataUrl(file);
+  const image = await loadImage(original);
+  const scale = Math.min(1, MAX_IMAGE_SIDE / Math.max(image.naturalWidth, image.naturalHeight));
+  const width = Math.max(1, Math.round(image.naturalWidth * scale));
+  const height = Math.max(1, Math.round(image.naturalHeight * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+
+  const context = canvas.getContext("2d", { willReadFrequently: true });
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, width, height);
+  context.drawImage(image, 0, 0, width, height);
+
+  return {
+    src: canvas.toDataURL("image/jpeg", IMAGE_QUALITY),
+    width,
+    height,
+    accent: getAverageColor(canvas)
+  };
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(String(reader.result)));
+    reader.addEventListener("error", () => reject(reader.error));
+    reader.readAsDataURL(file);
+  });
+}
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.addEventListener("load", () => resolve(image));
+    image.addEventListener("error", reject);
+    image.src = src;
+  });
+}
+
+function getAverageColor(sourceCanvas) {
+  const sampleCanvas = document.createElement("canvas");
+  sampleCanvas.width = 12;
+  sampleCanvas.height = 12;
+  const sampleContext = sampleCanvas.getContext("2d", { willReadFrequently: true });
+  sampleContext.drawImage(sourceCanvas, 0, 0, 12, 12);
+  const pixels = sampleContext.getImageData(0, 0, 12, 12).data;
+  let r = 0;
+  let g = 0;
+  let b = 0;
+  let count = 0;
+
+  for (let index = 0; index < pixels.length; index += 4) {
+    const alpha = pixels[index + 3];
+    if (alpha < 16) continue;
+    r += pixels[index];
+    g += pixels[index + 1];
+    b += pixels[index + 2];
+    count += 1;
+  }
+
+  if (!count) return { r: 15, g: 118, b: 110 };
+
+  return strengthenColor({
+    r: r / count,
+    g: g / count,
+    b: b / count
+  });
+}
+
+function strengthenColor(color) {
+  const max = Math.max(color.r, color.g, color.b);
+  const min = Math.min(color.r, color.g, color.b);
+  const saturation = max - min;
+
+  if (saturation < 28) {
+    return { r: 15, g: 118, b: 110 };
+  }
+
+  return {
+    r: clampColor(color.r * 0.82),
+    g: clampColor(color.g * 0.82),
+    b: clampColor(color.b * 0.82)
+  };
+}
+
+function renderAll() {
+  elements.projectTitleInput.value = state.title;
+  elements.presenterNameInput.value = state.presenter;
   renderSlideList();
+  renderForm();
   renderPreview();
   updateControls();
 }
 
 function renderSlideList() {
-  const selectedIndex = getSelectedIndex();
   elements.slideCount.textContent = `${state.slides.length}장`;
   elements.slideList.innerHTML = "";
+  const selectedIndex = getSelectedIndex();
 
   state.slides.forEach((slide, index) => {
     const item = document.createElement("li");
     const button = document.createElement("button");
     button.type = "button";
-    button.className = `slide-card${index === selectedIndex ? " is-active" : ""}`;
-    button.dataset.id = slide.id;
-    button.setAttribute("aria-label", `${index + 1}번 슬라이드 선택`);
+    button.className = `image-card${index === selectedIndex ? " is-active" : ""}`;
+    button.setAttribute("aria-label", `${index + 1}번 이미지 슬라이드 선택`);
+    const firstImage = slide.images[0];
     button.innerHTML = `
-      <span class="slide-card-number">${index + 1}</span>
+      <img src="${escapeAttribute(firstImage.src)}" alt="">
       <span>
-        <span class="slide-card-title">${escapeHtml(slide.title || "제목 없음")}</span>
-        <span class="slide-card-meta">${layoutLabel(slide.layout)}${slide.image ? " · 이미지" : ""}</span>
+        <strong>${escapeHtml(slide.title || `사진 ${index + 1}`)}</strong>
+        <span>${index + 1}번 · 사진 ${slide.images.length}장${slide.caption ? " · 설명 있음" : ""}</span>
       </span>
     `;
     button.addEventListener("click", () => {
@@ -280,123 +663,162 @@ function renderSlideList() {
   });
 }
 
+function renderForm() {
+  const slide = getSelectedSlide();
+  const hasSlide = Boolean(slide);
+  elements.selectedSlideLabel.textContent = hasSlide ? `${getSelectedIndex() + 1}번 이미지` : "이미지를 넣어 주세요";
+  elements.slideTitleInput.value = slide?.title || "";
+  elements.layoutInput.value = slide?.layout || "focus";
+  elements.photoArrangeInput.value = slide?.arrangement || "auto";
+  elements.photoFitInput.value = slide?.fit || "contain";
+  elements.captionInput.value = slide?.caption || "";
+  elements.notesInput.value = slide?.notes || "";
+  elements.slideTitleInput.disabled = !hasSlide;
+  elements.layoutInput.disabled = !hasSlide;
+  elements.photoArrangeInput.disabled = !hasSlide;
+  elements.photoFitInput.disabled = !hasSlide;
+  elements.slideImagesInput.disabled = !hasSlide;
+  elements.captionInput.disabled = !hasSlide;
+  elements.notesInput.disabled = !hasSlide;
+  renderSlidePhotoList(slide);
+}
+
+function renderSlidePhotoList(slide) {
+  elements.slidePhotoList.innerHTML = "";
+  if (!slide) {
+    elements.slidePhotoList.hidden = true;
+    return;
+  }
+
+  elements.slidePhotoList.hidden = false;
+  slide.images.forEach((image, index) => {
+    const item = document.createElement("div");
+    item.className = "slide-photo-chip";
+    item.innerHTML = `
+      <img src="${escapeAttribute(image.src)}" alt="">
+      <span>${index + 1}</span>
+      <div class="photo-chip-actions">
+        <button type="button" data-action="left" aria-label="${index + 1}번 사진 앞으로 이동">‹</button>
+        <button type="button" data-action="right" aria-label="${index + 1}번 사진 뒤로 이동">›</button>
+        <button type="button" data-action="remove" aria-label="${index + 1}번 사진 제거">×</button>
+      </div>
+    `;
+    item.querySelector('[data-action="left"]').disabled = index === 0;
+    item.querySelector('[data-action="right"]').disabled = index === slide.images.length - 1;
+    item.querySelector('[data-action="left"]').addEventListener("click", () => movePhotoInSelectedSlide(index, -1));
+    item.querySelector('[data-action="right"]').addEventListener("click", () => movePhotoInSelectedSlide(index, 1));
+    item.querySelector('[data-action="remove"]').addEventListener("click", () => removePhotoFromSelectedSlide(index));
+    elements.slidePhotoList.append(item);
+  });
+}
+
 function renderPreview() {
-  const selectedIndex = getSelectedIndex();
-  elements.slidePreview.innerHTML = renderSlideMarkup(
-    getSelectedSlide(),
-    selectedIndex,
-    state.slides.length,
-    state.theme,
-    state.title
-  );
-  elements.selectedSlideLabel.textContent = `${selectedIndex + 1}번 슬라이드`;
+  const slide = getSelectedSlide();
+  if (!slide) {
+    elements.slidePreview.innerHTML = `
+      <div class="empty-slide">
+        <div>
+          <strong>이미지로 시작하세요</strong>
+          <span>왼쪽에서 여러 이미지를 넣으면 자동으로 발표용 슬라이드가 만들어집니다.</span>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  elements.slidePreview.innerHTML = renderSlideMarkup(slide, getSelectedIndex(), state.slides.length, state);
 }
 
 function updateControls() {
   const selectedIndex = getSelectedIndex();
-  elements.moveUpButton.disabled = selectedIndex === 0;
-  elements.moveDownButton.disabled = selectedIndex === state.slides.length - 1;
-  elements.deleteSlideButton.disabled = state.slides.length === 1;
-  elements.removeImageButton.disabled = !getSelectedSlide().image;
+  const hasSlides = state.slides.length > 0;
+  elements.clearButton.disabled = !hasSlides;
+  elements.deleteSlideButton.disabled = !hasSlides;
+  elements.exportButton.disabled = !hasSlides;
+  elements.presentButton.disabled = !hasSlides;
+  elements.slideImagesInput.disabled = !hasSlides;
+  elements.photoArrangeInput.disabled = !hasSlides;
+  elements.photoFitInput.disabled = !hasSlides;
+  elements.moveUpButton.disabled = selectedIndex <= 0;
+  elements.moveDownButton.disabled = selectedIndex === -1 || selectedIndex >= state.slides.length - 1;
 }
 
-function updateSelectedSlide(patch, refreshForm = true) {
-  Object.assign(getSelectedSlide(), patch);
+function updateSelectedSlide(patch) {
+  const slide = getSelectedSlide();
+  if (!slide) return;
+  Object.assign(slide, patch);
   saveState();
-
-  if (refreshForm) {
-    renderAll();
-    return;
-  }
-
   renderSlideList();
   renderPreview();
-  updateControls();
-}
-
-function addSlide() {
-  const index = getSelectedIndex();
-  const slide = createSlide();
-  state.slides.splice(index + 1, 0, slide);
-  selectedId = slide.id;
-  saveState();
-  renderAll();
-  setStatus("슬라이드를 추가했습니다.");
-}
-
-function duplicateSelectedSlide() {
-  const index = getSelectedIndex();
-  const source = getSelectedSlide();
-  const copy = normalizeSlide({
-    ...source,
-    id: createId(),
-    title: `${source.title || "슬라이드"} 복사`
-  });
-  state.slides.splice(index + 1, 0, copy);
-  selectedId = copy.id;
-  saveState();
-  renderAll();
-  setStatus("슬라이드를 복제했습니다.");
-}
-
-function deleteSelectedSlide() {
-  if (state.slides.length === 1) return;
-  const index = getSelectedIndex();
-  state.slides.splice(index, 1);
-  selectedId = state.slides[Math.max(0, index - 1)].id;
-  saveState();
-  renderAll();
-  setStatus("슬라이드를 삭제했습니다.");
 }
 
 function moveSelectedSlide(direction) {
   const index = getSelectedIndex();
   const nextIndex = index + direction;
-  if (nextIndex < 0 || nextIndex >= state.slides.length) return;
+  if (index === -1 || nextIndex < 0 || nextIndex >= state.slides.length) return;
 
   const [slide] = state.slides.splice(index, 1);
   state.slides.splice(nextIndex, 0, slide);
   selectedId = slide.id;
-  saveState();
+  saveState({ immediate: true });
   renderAll();
 }
 
-function addImageToSelectedSlide(event) {
-  const [file] = event.target.files;
-  if (!file) return;
+function deleteSelectedSlide() {
+  const index = getSelectedIndex();
+  if (index === -1) return;
+  state.slides.splice(index, 1);
+  selectedId = state.slides[Math.min(index, state.slides.length - 1)]?.id || null;
+  saveState({ immediate: true });
+  renderAll();
+  setStatus("선택한 슬라이드를 삭제했습니다.");
+}
 
-  if (!file.type.startsWith("image/")) {
-    setStatus("이미지 파일만 넣을 수 있습니다.");
-    elements.imageInput.value = "";
+function removePhotoFromSelectedSlide(photoIndex) {
+  const slide = getSelectedSlide();
+  if (!slide) return;
+
+  if (slide.images.length <= 1) {
+    deleteSelectedSlide();
     return;
   }
 
-  const reader = new FileReader();
-  reader.addEventListener("load", () => {
-    const slide = getSelectedSlide();
-    const alt = elements.imageAltInput.value || file.name.replace(/\.[^.]+$/, "");
-    slide.image = {
-      src: String(reader.result),
-      alt
-    };
-    saveState();
-    renderAll();
-    setStatus(file.size > 6 * 1024 * 1024 ? "이미지를 넣었습니다. 파일 크기가 조금 커질 수 있습니다." : "이미지를 넣었습니다.");
-  });
-  reader.readAsDataURL(file);
+  slide.images.splice(photoIndex, 1);
+  slide.accent = blendImageAccents(slide.images);
+  saveState({ immediate: true });
+  renderAll();
+  setStatus("현재 슬라이드에서 사진을 제거했습니다.");
 }
 
-function removeSelectedImage() {
+function movePhotoInSelectedSlide(photoIndex, direction) {
   const slide = getSelectedSlide();
-  slide.image = null;
-  saveState();
+  if (!slide) return;
+
+  const nextIndex = photoIndex + direction;
+  if (nextIndex < 0 || nextIndex >= slide.images.length) return;
+
+  const [image] = slide.images.splice(photoIndex, 1);
+  slide.images.splice(nextIndex, 0, image);
+  slide.accent = blendImageAccents(slide.images);
+  saveState({ immediate: true });
   renderAll();
-  setStatus("이미지를 제거했습니다.");
+  setStatus("사진 순서를 바꿨습니다.");
+}
+
+function clearSlides() {
+  if (!state.slides.length) return;
+  const shouldClear = window.confirm("모든 이미지 슬라이드를 비울까요?");
+  if (!shouldClear) return;
+  state.slides = [];
+  selectedId = null;
+  saveState({ immediate: true });
+  renderAll();
+  setStatus("슬라이드를 모두 비웠습니다.");
 }
 
 function saveProjectFile() {
   const json = JSON.stringify(state, null, 2);
-  downloadFile(`${safeFileName(state.title || "slide-project")}.json`, json, "application/json;charset=utf-8");
+  downloadFile(`${safeFileName(state.title || "image-slide-project")}.json`, json, "application/json;charset=utf-8");
   setStatus("프로젝트 파일을 만들었습니다.");
 }
 
@@ -408,8 +830,8 @@ function importProjectFile(event) {
   reader.addEventListener("load", () => {
     try {
       state = normalizeProject(JSON.parse(String(reader.result)));
-      selectedId = state.slides[0].id;
-      saveState();
+      selectedId = state.slides[0]?.id || null;
+      saveState({ immediate: true });
       renderAll();
       setStatus("프로젝트를 불러왔습니다.");
     } catch (error) {
@@ -422,36 +844,11 @@ function importProjectFile(event) {
   reader.readAsText(file, "utf-8");
 }
 
-function exportDeck() {
-  const html = buildDeckHtml(state);
-  downloadFile(`${safeFileName(state.title || "presentation")}.html`, html, "text/html;charset=utf-8");
-  setStatus("발표용 HTML 파일을 만들었습니다.");
-}
-
-function downloadFile(fileName, content, type) {
-  const blob = new Blob([content], { type });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = fileName;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1200);
-}
-
-function safeFileName(name) {
-  return String(name)
-    .trim()
-    .replace(/[\\/:*?"<>|]+/g, "-")
-    .replace(/\s+/g, "-")
-    .slice(0, 60) || "presentation";
-}
-
 function startPresentation() {
+  if (!state.slides.length) return;
   const session = presentationSession + 1;
   presentationSession = session;
-  presenterIndex = getSelectedIndex();
+  presenterIndex = Math.max(0, getSelectedIndex());
   elements.presenter.hidden = false;
   document.body.style.overflow = "hidden";
   renderPresenter();
@@ -491,86 +888,99 @@ function renderPresenter() {
     state.slides[presenterIndex],
     presenterIndex,
     state.slides.length,
-    state.theme,
-    state.title
+    state
   );
   elements.presentPrevButton.disabled = presenterIndex === 0;
   elements.presentNextButton.disabled = presenterIndex === state.slides.length - 1;
 }
 
-function renderSlideMarkup(slide, index, total, theme, projectTitle) {
-  const layout = safeLayout(slide.layout);
-  let content = "";
+function exportDeck() {
+  if (!state.slides.length) return;
+  const html = buildDeckHtml(state);
+  downloadFile(`${safeFileName(state.title || "presentation")}.html`, html, "text/html;charset=utf-8");
+  setStatus("발표용 HTML 파일을 만들었습니다.");
+}
 
-  if (layout === "split") {
-    content = `
-      <div class="text-stack">${renderTextStack(slide)}</div>
-      ${renderMedia(slide)}
-    `;
-  } else if (layout === "image") {
-    content = `
-      <div class="text-stack">${renderTextStack(slide)}</div>
-      ${renderMedia(slide)}
-    `;
-  } else {
-    content = renderTextStack(slide);
-  }
+function downloadFile(fileName, content, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1200);
+}
+
+function safeFileName(name) {
+  return String(name)
+    .trim()
+    .replace(/[\\/:*?"<>|]+/g, "-")
+    .replace(/\s+/g, "-")
+    .slice(0, 60) || "presentation";
+}
+
+function renderSlideMarkup(slide, index, total, project) {
+  const style = buildSlideStyle(slide);
+  const layout = safeLayout(slide.layout);
+  const caption = slide.caption ? `<p class="slide-caption">${bodyToHtml(slide.caption)}</p>` : "";
+  const presenter = project.presenter ? escapeHtml(project.presenter) : "";
+  const textMarkup = layout === "focus" ? "" : `
+      <div class="slide-text">
+        <span class="slide-number">${index + 1} / ${total}</span>
+        <div class="slide-copy">
+          <h2 class="slide-title">${escapeHtml(slide.title || `사진 ${index + 1}`)}</h2>
+          ${caption}
+        </div>
+        <footer class="slide-footer">
+          <span>${escapeHtml(project.title || "발표")}</span>
+          <span>${presenter}</span>
+        </footer>
+      </div>`;
 
   return `
-    <article class="slide layout-${layout}" data-theme="${safeTheme(theme)}">
-      <div class="slide-content">${content}</div>
-      <footer class="slide-footer">
-        <span>${escapeHtml(projectTitle || "발표")}</span>
-        <span>${index + 1} / ${total}</span>
-      </footer>
+    <article class="slide layout-${layout}" style="${style}">
+      <div class="photo-stage">
+        ${renderPhotoSet(slide)}
+      </div>
+      ${textMarkup}
     </article>
   `;
 }
 
-function renderTextStack(slide) {
-  const kicker = slide.kicker ? `<p class="slide-kicker">${escapeHtml(slide.kicker)}</p>` : "";
-  const title = slide.title ? `<h2 class="slide-title">${escapeHtml(slide.title)}</h2>` : "";
-  const body = slide.body ? `<div class="slide-body">${bodyToHtml(slide.body)}</div>` : "";
-  return `${kicker}${title}${body}`;
+function renderPhotoSet(slide) {
+  const arrangement = safeArrangement(slide.arrangement);
+  const fit = safeFit(slide.fit);
+  const photos = slide.images
+    .map((image, index) => `
+      <figure class="photo-card">
+        <img src="${escapeAttribute(image.src)}" alt="${escapeAttribute(image.alt || `${slide.title} ${index + 1}`)}">
+      </figure>
+    `)
+    .join("");
+  return `<div class="photo-set arrange-${arrangement} fit-${fit}" data-count="${slide.images.length}">${photos}</div>`;
 }
 
-function renderMedia(slide) {
-  if (!slide.image?.src) {
-    return `<div class="media-placeholder">이미지</div>`;
-  }
+function buildSlideStyle(slide) {
+  const accent = normalizeAccent(slide.accent);
+  const firstImage = slide.images[0];
+  return `--accent-rgb: ${accent.r}, ${accent.g}, ${accent.b}; --photo: url("${cssUrl(firstImage.src)}");`;
+}
 
-  return `
-    <figure class="slide-media">
-      <img src="${escapeAttribute(slide.image.src)}" alt="${escapeAttribute(slide.image.alt || "")}">
-    </figure>
-  `;
+function cssUrl(value) {
+  return String(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, "");
 }
 
 function bodyToHtml(text) {
-  const blocks = String(text)
-    .trim()
-    .split(/\n{2,}/)
-    .map((block) => block.trim())
-    .filter(Boolean);
-
-  return blocks
-    .map((block) => {
-      const lines = block
-        .split(/\n/)
-        .map((line) => line.trim())
-        .filter(Boolean);
-      const isList = lines.length > 0 && lines.every((line) => /^[-*]\s+/.test(line));
-
-      if (isList) {
-        const items = lines
-          .map((line) => `<li>${escapeHtml(line.replace(/^[-*]\s+/, ""))}</li>`)
-          .join("");
-        return `<ul>${items}</ul>`;
-      }
-
-      return `<p>${lines.map(escapeHtml).join("<br>")}</p>`;
-    })
-    .join("");
+  return escapeHtml(text)
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .join("<br>");
 }
 
 function escapeHtml(value) {
@@ -586,26 +996,25 @@ function escapeAttribute(value) {
   return escapeHtml(value).replace(/`/g, "&#96;");
 }
 
-function layoutLabel(layout) {
-  const labels = {
-    title: "제목",
-    text: "본문",
-    split: "글 + 이미지",
-    image: "이미지 중심",
-    quote: "인용"
-  };
-  return labels[safeLayout(layout)];
+function setAutosaveIndicator(message) {
+  elements.autosaveIndicator.textContent = message;
 }
 
-function setStatus(message) {
+function setStatus(message, options = {}) {
+  window.clearTimeout(statusTimer);
   elements.status.textContent = message;
+  if (options.temporary) {
+    statusTimer = window.setTimeout(() => {
+      if (elements.status.textContent === message) elements.status.textContent = "";
+    }, 2200);
+  }
 }
 
 function buildDeckHtml(project) {
   const title = escapeHtml(project.title || "학생 발표");
   const slides = project.slides
     .map((slide, index) => {
-      const markup = renderSlideMarkup(slide, index, project.slides.length, project.theme, project.title);
+      const markup = renderSlideMarkup(slide, index, project.slides.length, project);
       return markup.replace("<article", `<article id="slide-${index + 1}"`);
     })
     .join("\n");
@@ -637,11 +1046,6 @@ function buildDeckHtml(project) {
 
 function getDeckCss() {
   return `
-:root {
-  --ink: #202124;
-  --bar: rgba(12, 13, 16, 0.88);
-}
-
 * {
   box-sizing: border-box;
 }
@@ -649,7 +1053,7 @@ function getDeckCss() {
 body {
   margin: 0;
   min-height: 100vh;
-  color: var(--ink);
+  color: #1f2328;
   background: #0c0d10;
   font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
 }
@@ -689,6 +1093,10 @@ button:disabled {
   display: grid;
 }
 
+.deck-viewport .slide.layout-focus.is-active {
+  display: grid;
+}
+
 .deck-bar {
   position: fixed;
   left: 14px;
@@ -703,7 +1111,7 @@ button:disabled {
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 8px;
   color: #ffffff;
-  background: var(--bar);
+  background: rgba(12, 13, 16, 0.88);
 }
 
 .deck-actions {
@@ -714,234 +1122,259 @@ button:disabled {
 }
 
 .slide {
-  --slide-bg: #fffefa;
-  --slide-ink: #202124;
-  --slide-muted: #606873;
-  --slide-accent: #0f766e;
-  --slide-soft: #eff8f6;
-  --slide-line: rgba(32, 33, 36, 0.16);
+  --accent-rgb: 15, 118, 110;
+  --slide-ink: #17201f;
   position: relative;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: 16px;
-  padding: 54px;
+  grid-template-columns: minmax(0, 1fr) 286px;
+  gap: 24px;
+  padding: 38px;
   overflow: hidden;
   color: var(--slide-ink);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0)),
-    var(--slide-bg);
-  border: 1px solid var(--slide-line);
+    radial-gradient(circle at 18% 12%, rgba(var(--accent-rgb), 0.26), transparent 34%),
+    linear-gradient(135deg, rgba(var(--accent-rgb), 0.13), #fffdfa 52%, rgba(255, 255, 255, 0.84));
+  border: 1px solid rgba(31, 35, 40, 0.14);
   border-radius: 8px;
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
-}
-
-.slide[data-theme="paper"] {
-  --slide-bg: #fffefa;
-  --slide-ink: #202124;
-  --slide-muted: #6b665c;
-  --slide-accent: #9a6a13;
-  --slide-soft: #f6edd7;
-}
-
-.slide[data-theme="mint"] {
-  --slide-bg: #edf8f6;
-  --slide-ink: #123332;
-  --slide-muted: #47615f;
-  --slide-accent: #0f766e;
-  --slide-soft: #d7f0eb;
-}
-
-.slide[data-theme="coral"] {
-  --slide-bg: #fff1eb;
-  --slide-ink: #33201b;
-  --slide-muted: #75584f;
-  --slide-accent: #c8523b;
-  --slide-soft: #ffe0d5;
-}
-
-.slide[data-theme="night"] {
-  --slide-bg: #181a20;
-  --slide-ink: #f5f1e8;
-  --slide-muted: #c9c2b4;
-  --slide-accent: #6ee7d8;
-  --slide-soft: #232934;
-  --slide-line: rgba(255, 255, 255, 0.2);
 }
 
 .slide::after {
   content: "";
   position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 34%;
-  height: 10px;
-  background: linear-gradient(90deg, var(--slide-accent), transparent);
-  opacity: 0.8;
+  inset: auto 0 0 auto;
+  width: 42%;
+  height: 9px;
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.92), rgba(var(--accent-rgb), 0));
 }
 
-.slide-content {
+.photo-stage {
+  position: relative;
   min-height: 0;
+  align-self: stretch;
+  margin: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(var(--accent-rgb), 0.12);
+  box-shadow: 0 22px 42px rgba(31, 35, 40, 0.18);
+}
+
+.photo-stage::before {
+  content: "";
+  position: absolute;
+  inset: -28px;
+  background-image: var(--photo);
+  background-size: cover;
+  background-position: center;
+  filter: blur(22px) saturate(0.9);
+  opacity: 0.26;
+}
+
+.photo-set {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: minmax(0, 1fr);
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  padding: 14px;
+}
+
+.photo-card {
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 12px 24px rgba(31, 35, 40, 0.12);
+}
+
+.photo-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.fit-cover .photo-card img {
+  object-fit: cover;
+}
+
+.fit-contain .photo-card img {
+  object-fit: contain;
+}
+
+.photo-set[data-count="1"],
+.arrange-auto[data-count="1"] {
+  padding: 0;
+}
+
+.arrange-auto[data-count="2"],
+.arrange-auto[data-count="4"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.arrange-auto[data-count="3"] {
+  grid-template-columns: 1.15fr 0.85fr;
+}
+
+.arrange-auto[data-count="3"] .photo-card:first-child,
+.arrange-hero .photo-card:first-child {
+  grid-row: span 2;
+}
+
+.arrange-auto[data-count="5"],
+.arrange-auto[data-count="6"],
+.arrange-auto[data-count="7"],
+.arrange-auto[data-count="8"],
+.arrange-auto[data-count="9"],
+.arrange-auto[data-count="10"],
+.arrange-auto[data-count="11"],
+.arrange-auto[data-count="12"],
+.arrange-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.arrange-auto[data-count="13"],
+.arrange-auto[data-count="14"],
+.arrange-auto[data-count="15"],
+.arrange-auto[data-count="16"] {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.arrange-hero {
+  grid-template-columns: 1.35fr 1fr;
+}
+
+.arrange-hero .photo-card:first-child {
+  grid-column: 1;
+}
+
+.arrange-row {
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(120px, 1fr);
+  grid-template-columns: none;
+}
+
+.arrange-column {
+  grid-template-columns: 1fr;
+}
+
+.slide-text {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 18px;
+  min-width: 0;
+}
+
+.slide-number {
+  width: fit-content;
+  padding: 7px 10px;
+  border-radius: 999px;
+  color: rgb(var(--accent-rgb));
+  background: rgba(var(--accent-rgb), 0.12);
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.slide-copy {
   display: grid;
   align-content: center;
-  gap: 18px;
-}
-
-.slide-kicker {
-  margin: 0;
-  color: var(--slide-accent);
-  font-size: 1.02rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  gap: 16px;
+  min-width: 0;
 }
 
 .slide-title {
   margin: 0;
-  color: var(--slide-ink);
-  font-size: 3rem;
-  line-height: 1.1;
+  font-size: 2.35rem;
+  line-height: 1.12;
   letter-spacing: 0;
   overflow-wrap: anywhere;
 }
 
-.slide-body {
-  color: var(--slide-ink);
-  font-size: 1.28rem;
-  line-height: 1.55;
-}
-
-.slide-body p,
-.slide-body ul {
+.slide-caption {
   margin: 0;
-}
-
-.slide-body p + p,
-.slide-body ul + p,
-.slide-body p + ul {
-  margin-top: 0.7em;
-}
-
-.slide-body ul {
-  padding-left: 1.2em;
-}
-
-.slide-body li + li {
-  margin-top: 0.3em;
-}
-
-.slide-media,
-.media-placeholder {
-  width: 100%;
-  min-height: 0;
-  margin: 0;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid var(--slide-line);
-  background: var(--slide-soft);
-}
-
-.slide-media img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.media-placeholder {
-  min-height: 210px;
-  display: grid;
-  place-items: center;
-  color: var(--slide-muted);
-  font-weight: 800;
+  color: #3f454c;
+  font-size: 1.14rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
 }
 
 .slide-footer {
   display: flex;
-  align-items: center;
   justify-content: space-between;
   gap: 12px;
-  color: var(--slide-muted);
-  font-size: 0.9rem;
-  font-weight: 800;
-}
-
-.layout-title .slide-content,
-.layout-quote .slide-content {
-  justify-items: center;
-  text-align: center;
-}
-
-.layout-title .slide-title {
-  max-width: 900px;
-  font-size: 3.8rem;
-}
-
-.layout-title .slide-body {
-  max-width: 780px;
-  color: var(--slide-muted);
-  font-size: 1.34rem;
-}
-
-.layout-text .slide-content {
-  align-content: start;
-}
-
-.layout-text .slide-body {
-  max-width: 900px;
-}
-
-.layout-split .slide-content {
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.85fr);
-  align-items: center;
-}
-
-.layout-split .text-stack {
-  display: grid;
-  gap: 18px;
-}
-
-.layout-split .slide-title {
-  font-size: 2.45rem;
-}
-
-.layout-split .slide-media,
-.layout-split .media-placeholder {
-  height: 100%;
-  min-height: 330px;
-}
-
-.layout-image .slide-content {
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  align-content: stretch;
-}
-
-.layout-image .slide-media,
-.layout-image .media-placeholder {
-  min-height: 360px;
-}
-
-.layout-image .slide-title {
-  font-size: 2.4rem;
-}
-
-.layout-quote .slide-title {
-  max-width: 860px;
-  font-size: 2rem;
-  color: var(--slide-accent);
-}
-
-.layout-quote .slide-body {
-  max-width: 820px;
-  font-size: 2rem;
+  color: #59606b;
+  font-size: 0.86rem;
   font-weight: 850;
-  line-height: 1.35;
 }
 
-.layout-quote .slide-body p::before {
-  content: "\\201C";
+.layout-focus {
+  display: grid;
+  grid-template-columns: 1fr;
+  padding: 30px;
 }
 
-.layout-quote .slide-body p::after {
-  content: "\\201D";
+.layout-focus .photo-stage {
+  min-height: 0;
+}
+
+.layout-grid {
+  grid-template-columns: minmax(0, 1fr) 260px;
+}
+
+.layout-split {
+  grid-template-columns: minmax(0, 0.92fr) minmax(250px, 0.58fr);
+}
+
+.layout-split .slide-text {
+  padding: 8px 0;
+}
+
+.layout-caption,
+.layout-strip {
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.layout-caption .slide-text,
+.layout-strip .slide-text {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0 0;
+}
+
+.layout-caption .slide-copy,
+.layout-strip .slide-copy {
+  gap: 4px;
+}
+
+.layout-caption .slide-title,
+.layout-strip .slide-title {
+  font-size: 1.74rem;
+}
+
+.layout-caption .slide-caption,
+.layout-strip .slide-caption {
+  font-size: 0.98rem;
+}
+
+.layout-strip .photo-set {
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(160px, 1fr);
+  grid-template-columns: none;
+  overflow: hidden;
+}
+
+.layout-strip .photo-set .photo-card:first-child,
+.arrange-row .photo-card:first-child,
+.arrange-column .photo-card:first-child {
+  grid-row: auto;
 }
 
 @media (max-width: 760px) {
@@ -992,6 +1425,7 @@ button:disabled {
     break-after: page;
     page-break-after: always;
   }
+
 }
 `;
 }
