@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-NB76SV96');</script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>17과 문법 1 보조 퀴즈 | V-고 보니</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../shared/project-topbar-compact.css" />
+    <link rel="stylesheet" href="grammar-support-quiz.css" />
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NB76SV96"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <nav class="topbar" aria-label="상단 이동">
+        <a href="../index.html"><i class="fa-solid fa-house"></i> 메인</a>
+        <span>|</span>
+        <a href="index.html">17과 목록</a>
+        <span>|</span>
+        <a href="grammar1.html">문법 1</a>
+        <span>|</span>
+        <strong>보조 퀴즈 | V-고 보니</strong>
+    </nav>
+
+    <main class="shell">
+        <section class="hero">
+            <div>
+                <p class="eyebrow">Grammar 1 Support Quiz</p>
+                <h1>문법 1 보조 퀴즈: V-고 보니</h1>
+                <p class="lead">뜻을 먼저 보고, 모양을 만들고, 쉬운 문맥에서 골라 보세요. 각 단계는 4문항입니다.</p>
+            </div>
+            <div class="hero-actions">
+                <a class="link-btn" href="grammar1.html"><i class="fa-solid fa-book-open"></i> 문법 1 학습</a>
+                <a class="link-btn primary" href="grammar2-support-quiz.html">문법 2 퀴즈 <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </section>
+
+        <nav id="stageNav" class="stage-nav" aria-label="3단계 비계"></nav>
+
+        <section class="layout">
+            <section id="quizPanel" class="quiz-panel" aria-live="polite">
+                <div class="quiz-head">
+                    <div>
+                        <p id="stageLabel" class="eyebrow"></p>
+                        <h2 id="stageTitle" class="quiz-title"></h2>
+                        <p id="stageFocus" class="quiz-focus"></p>
+                    </div>
+                    <span id="questionCount" class="counter"></span>
+                </div>
+                <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+
+                <div id="contextGrid" class="context-grid" hidden>
+                    <article class="context-box ko">
+                        <span class="context-label">쉬운 한국어 상황</span>
+                        <p id="contextKo" class="context-text"></p>
+                    </article>
+                    <article class="context-box vi">
+                        <span class="context-label">Tiếng Việt</span>
+                        <p id="contextVi" class="context-text"></p>
+                    </article>
+                </div>
+
+                <p id="prompt" class="prompt"></p>
+                <p id="hint" class="hint"></p>
+                <div id="choices" class="choices"></div>
+                <div id="feedback" class="feedback"></div>
+
+                <div class="actions">
+                    <button id="resetBtn" class="reset-btn" type="button"><i class="fa-solid fa-rotate-left"></i> 이 단계 다시</button>
+                    <button id="nextBtn" class="next-btn" type="button" disabled>다음 문제 <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </section>
+
+            <section id="resultCard" class="result-card"></section>
+        </section>
+    </main>
+
+    <script>
+        window.C17_GRAMMAR_SUPPORT = {
+            grammar: "V-고 보니",
+            stages: [
+                {
+                    label: "1단계",
+                    title: "뜻 알기",
+                    focus: "어떤 일을 한 뒤에 새 사실을 알게 될 때 써요.",
+                    questions: [
+                        {
+                            contextKo: "민아가 새 친구를 만났어요. 만나기 전에는 조금 무서운 사람이라고 생각했어요. 직접 만나니까 아주 친절했어요.",
+                            contextVi: "Mina gặp một người bạn mới. Trước khi gặp, Mina nghĩ bạn ấy hơi đáng sợ. Sau khi gặp trực tiếp, bạn ấy rất thân thiện.",
+                            prompt: "이때 알맞은 말은?",
+                            hint: "만난 뒤에 새 사실을 알았어요.",
+                            choices: ["만나고 보니 친절했어요.", "만나는 척했어요.", "만난다고 해서 다 친절해요.", "만나다니요?"],
+                            answer: 0,
+                            feedback: "만난 뒤에 새 사실을 알았으므로 <code>만나고 보니</code>가 맞습니다."
+                        },
+                        {
+                            contextKo: "두 사람이 싸웠다는 말을 들었어요. 그런데 자세히 들으니까 싸운 것이 아니었어요.",
+                            contextVi: "Tôi nghe nói hai người đã cãi nhau. Nhưng khi nghe kỹ thì hóa ra họ không cãi nhau.",
+                            prompt: "가장 알맞은 문장은?",
+                            hint: "들은 뒤에 오해였다는 것을 알았어요.",
+                            choices: ["자세히 듣는 척했어요.", "자세히 듣고 보니 오해였어요.", "자세히 듣다니요?", "자세히 들었다고 해서 다 믿어요."],
+                            answer: 1,
+                            feedback: "자세히 들은 뒤에 새 사실을 알았으므로 <code>듣고 보니</code>가 자연스럽습니다."
+                        },
+                        {
+                            prompt: "<code>V-고 보니</code>는 언제 써요?",
+                            hint: "앞의 일을 먼저 했어요. 그 뒤에 새로 알았어요.",
+                            choices: [
+                                "다른 사람을 부를 때 써요. (Dùng khi gọi người khác.)",
+                                "모르는 것을 질문할 때 써요. (Dùng khi hỏi điều mình không biết.)",
+                                "일을 한 뒤 새 사실을 알 때 써요. (Dùng khi làm xong rồi mới biết sự thật mới.)",
+                                "항상 약속을 말할 때 써요. (Dùng khi luôn nói về lời hứa.)"
+                            ],
+                            answer: 2,
+                            feedback: "<code>V-고 보니</code>는 행동 뒤에 새 사실을 알게 될 때 씁니다."
+                        },
+                        {
+                            contextKo: "설명서를 읽기 전에는 이 기계가 어려워 보였어요. 설명서를 읽으니까 쉬운 기계였어요.",
+                            contextVi: "Trước khi đọc hướng dẫn, chiếc máy này trông khó. Sau khi đọc hướng dẫn, tôi biết nó dễ dùng.",
+                            prompt: "가장 알맞은 문장은?",
+                            hint: "읽은 뒤에 쉬운 것을 알았어요.",
+                            choices: ["읽는 척했어요.", "읽다고 해서 다 쉬워요.", "읽다니요?", "읽고 보니 쉬웠어요."],
+                            answer: 3,
+                            feedback: "설명서를 읽은 뒤에 쉬운 것을 알았으므로 <code>읽고 보니</code>가 맞습니다."
+                        }
+                    ]
+                },
+                {
+                    label: "2단계",
+                    title: "모양 만들기",
+                    focus: "동사 어간 뒤에 <code>-고 보니</code>를 붙여요.",
+                    questions: [
+                        {
+                            prompt: "<code>만나다</code> + <code>고 보니</code> = ?",
+                            hint: "다를 빼고 <code>고 보니</code>를 붙여요.",
+                            choices: ["만나는 보니", "만난 보니", "만나서 보니", "만나고 보니"],
+                            answer: 3,
+                            feedback: "<code>만나다</code>는 <code>만나고 보니</code>로 씁니다."
+                        },
+                        {
+                            prompt: "<code>듣다</code> + <code>고 보니</code> = ?",
+                            hint: "동사 뒤에 바로 <code>고 보니</code>를 붙여요.",
+                            choices: ["들은 보니", "듣는 보니", "듣고 보니", "듣어 보니"],
+                            answer: 2,
+                            feedback: "<code>듣다</code>는 <code>듣고 보니</code>가 맞습니다."
+                        },
+                        {
+                            prompt: "<code>읽다</code> + <code>고 보니</code> = ?",
+                            hint: "읽은 뒤에 알게 된 사실을 말해요.",
+                            choices: ["읽는 보니", "읽고 보니", "읽은 척하니", "읽다고 보니"],
+                            answer: 1,
+                            feedback: "<code>읽다</code>는 <code>읽고 보니</code>로 씁니다."
+                        },
+                        {
+                            prompt: "<code>알다</code> + <code>고 보니</code> = ?",
+                            hint: "17과에서 자주 쓰는 표현이에요.",
+                            choices: ["알고 보니", "아는 보니", "안 보니", "알은 보니"],
+                            answer: 0,
+                            feedback: "<code>알다</code>는 <code>알고 보니</code>가 맞습니다."
+                        }
+                    ]
+                },
+                {
+                    label: "3단계",
+                    title: "문맥에서 고르기",
+                    focus: "짧은 상황을 보고 자연스러운 문장을 골라요.",
+                    questions: [
+                        {
+                            contextKo: "가게에 들어갔어요. 그 다음에 친구에게 전화했어요. 새로 알게 된 사실은 없어요.",
+                            contextVi: "Tôi đi vào cửa hàng. Sau đó tôi gọi điện cho bạn. Không có sự thật mới được phát hiện.",
+                            prompt: "빈칸에 알맞은 말은? 가게에 ______ 친구에게 전화했어요.",
+                            hint: "새 사실을 알게 된 것이 아니라, 순서만 말해요.",
+                            choices: ["들어가고 보니", "들어가고 나서", "들어가는 척해서", "들어간다고 해서"],
+                            answer: 1,
+                            contrast: true,
+                            feedback: "새 사실을 알게 된 문장이 아니라 순서를 말하므로 <code>들어가고 나서</code>가 맞습니다."
+                        },
+                        {
+                            contextKo: "친구가 화를 냈어요. 저는 이유를 몰랐어요. 친구 이야기를 들었어요. 제가 잘못했어요.",
+                            contextVi: "Bạn tôi giận. Tôi không biết lý do. Tôi nghe bạn ấy kể. Hóa ra tôi đã sai.",
+                            prompt: "빈칸에 알맞은 말은? 친구 이야기를 ______ 제가 잘못했어요.",
+                            hint: "이야기를 들은 뒤에 알았어요.",
+                            choices: ["듣는 척하니", "들은 척하니", "듣고 보니", "듣다니요"],
+                            answer: 2,
+                            feedback: "친구 이야기를 들은 뒤 알았으므로 <code>듣고 보니</code>가 자연스럽습니다."
+                        },
+                        {
+                            contextKo: "사진만 봤을 때는 음식이 매워 보였어요. 설명을 읽었어요. 맵지 않은 음식이었어요.",
+                            contextVi: "Chỉ nhìn ảnh thì món ăn trông cay. Tôi đọc phần giải thích. Hóa ra món đó không cay.",
+                            prompt: "빈칸에 알맞은 말은? 설명을 ______ 맵지 않았어요.",
+                            hint: "설명을 읽은 뒤 알았어요.",
+                            choices: ["읽는 척하니", "읽은 척하니", "읽다고 해서", "읽고 보니"],
+                            answer: 3,
+                            feedback: "설명을 읽은 뒤 새 사실을 알았으므로 <code>읽고 보니</code>가 맞습니다."
+                        },
+                        {
+                            contextKo: "동생은 지금 방에서 노래를 불러요. 노래가 아직 끝나지 않았어요.",
+                            contextVi: "Em tôi đang hát trong phòng ngay bây giờ. Bài hát vẫn chưa kết thúc.",
+                            prompt: "빈칸에 알맞은 말은? 동생은 지금 노래를 ______.",
+                            hint: "지금 계속 하는 행동을 말해요.",
+                            choices: ["부르고 있어요", "부르고 보니", "부르는 척해요", "부른다고 해서"],
+                            answer: 0,
+                            contrast: true,
+                            feedback: "지금 계속 하는 행동이므로 <code>부르고 있어요</code>가 맞습니다. 새 사실을 알게 된 문장은 아닙니다."
+                        }
+                    ]
+                }
+            ]
+        };
+    </script>
+    <script src="grammar-support-quiz.js"></script>
+    <script src="../shared/site-copyright.js"></script>
+</body>
+</html>

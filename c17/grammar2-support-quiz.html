@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-NB76SV96');</script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>17과 문법 2 보조 퀴즈 | A-(으)ㄴ/V-는 척하다</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../shared/project-topbar-compact.css" />
+    <link rel="stylesheet" href="grammar-support-quiz.css" />
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NB76SV96"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <nav class="topbar" aria-label="상단 이동">
+        <a href="../index.html"><i class="fa-solid fa-house"></i> 메인</a>
+        <span>|</span>
+        <a href="index.html">17과 목록</a>
+        <span>|</span>
+        <a href="grammar2.html">문법 2</a>
+        <span>|</span>
+        <strong>보조 퀴즈 | 척하다</strong>
+    </nav>
+
+    <main class="shell">
+        <section class="hero">
+            <div>
+                <p class="eyebrow">Grammar 2 Support Quiz</p>
+                <h1>문법 2 보조 퀴즈: A-(으)ㄴ/V-는 척하다</h1>
+                <p class="lead">뜻을 먼저 보고, 형용사와 동사 모양을 나누고, 쉬운 문맥에서 골라 보세요. 각 단계는 4문항입니다.</p>
+            </div>
+            <div class="hero-actions">
+                <a class="link-btn" href="grammar2.html"><i class="fa-solid fa-book-open"></i> 문법 2 학습</a>
+                <a class="link-btn primary" href="grammar1-support-quiz.html">문법 1 퀴즈 <i class="fa-solid fa-arrow-left"></i></a>
+            </div>
+        </section>
+
+        <nav id="stageNav" class="stage-nav" aria-label="3단계 비계"></nav>
+
+        <section class="layout">
+            <section id="quizPanel" class="quiz-panel" aria-live="polite">
+                <div class="quiz-head">
+                    <div>
+                        <p id="stageLabel" class="eyebrow"></p>
+                        <h2 id="stageTitle" class="quiz-title"></h2>
+                        <p id="stageFocus" class="quiz-focus"></p>
+                    </div>
+                    <span id="questionCount" class="counter"></span>
+                </div>
+                <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+
+                <div id="contextGrid" class="context-grid" hidden>
+                    <article class="context-box ko">
+                        <span class="context-label">쉬운 한국어 상황</span>
+                        <p id="contextKo" class="context-text"></p>
+                    </article>
+                    <article class="context-box vi">
+                        <span class="context-label">Tiếng Việt</span>
+                        <p id="contextVi" class="context-text"></p>
+                    </article>
+                </div>
+
+                <p id="prompt" class="prompt"></p>
+                <p id="hint" class="hint"></p>
+                <div id="choices" class="choices"></div>
+                <div id="feedback" class="feedback"></div>
+
+                <div class="actions">
+                    <button id="resetBtn" class="reset-btn" type="button"><i class="fa-solid fa-rotate-left"></i> 이 단계 다시</button>
+                    <button id="nextBtn" class="next-btn" type="button" disabled>다음 문제 <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </section>
+
+            <section id="resultCard" class="result-card"></section>
+        </section>
+    </main>
+
+    <script>
+        window.C17_GRAMMAR_SUPPORT = {
+            grammar: "A-(으)ㄴ/V-는 척하다",
+            stages: [
+                {
+                    label: "1단계",
+                    title: "뜻 알기",
+                    focus: "진짜와 다르게 그런 것처럼 행동할 때 써요.",
+                    questions: [
+                        {
+                            contextKo: "수지는 마음이 많이 아파요. 하지만 친구가 걱정할까 봐 웃어요.",
+                            contextVi: "Suji rất buồn. Nhưng vì sợ bạn lo lắng, Suji cười.",
+                            prompt: "수지는 무엇을 했어요?",
+                            hint: "진짜 마음은 괜찮지 않아요. 하지만 괜찮은 것처럼 행동해요.",
+                            choices: ["괜찮은 척했어요.", "알고 보니 괜찮았어요.", "괜찮다고 해서 다 웃어요.", "괜찮다니요?"],
+                            answer: 0,
+                            feedback: "진짜는 괜찮지 않지만 괜찮은 것처럼 행동했으므로 <code>괜찮은 척했어요</code>가 맞습니다."
+                        },
+                        {
+                            contextKo: "민호는 답을 알아요. 하지만 말하고 싶지 않아요. 그래서 '몰라요'라고 말해요.",
+                            contextVi: "Minho biết câu trả lời. Nhưng cậu ấy không muốn nói. Vì vậy cậu ấy nói 'Tôi không biết'.",
+                            prompt: "민호는 무엇을 했어요?",
+                            hint: "알지만 모르는 것처럼 행동했어요.",
+                            choices: ["알고 보니 몰랐어요.", "모르는 척했어요.", "몰라서 물었어요.", "모른다고 해서 다"],
+                            answer: 1,
+                            feedback: "알지만 모르는 것처럼 행동했으므로 <code>모르는 척했어요</code>가 자연스럽습니다."
+                        },
+                        {
+                            prompt: "<code>척하다</code>는 무슨 뜻이에요?",
+                            hint: "진짜와 행동이 달라요.",
+                            choices: [
+                                "나중에 새 사실을 알아요. (Sau đó mới biết sự thật mới.)",
+                                "다른 사람에게 꼭 말해요. (Nhất định nói với người khác.)",
+                                "진짜와 다르게 그런 것처럼 행동해요. (Giả vờ hành động như vậy dù không thật.)",
+                                "어떤 일을 끝까지 해요. (Làm một việc đến cuối.)"
+                            ],
+                            answer: 2,
+                            feedback: "<code>척하다</code>는 진짜와 다르게 그런 것처럼 행동한다는 뜻입니다."
+                        },
+                        {
+                            contextKo: "동생은 자지 않아요. 그런데 엄마가 방에 오니까 눈을 감아요.",
+                            contextVi: "Em không ngủ. Nhưng khi mẹ vào phòng, em nhắm mắt lại.",
+                            prompt: "동생은 무엇을 했어요?",
+                            hint: "자지 않지만 자는 것처럼 행동했어요.",
+                            choices: ["자고 보니 알았어요.", "자는다고 해서 다", "잔 척했어요.", "자는 척했어요."],
+                            answer: 3,
+                            feedback: "동사 <code>자다</code>는 <code>자는 척하다</code>로 씁니다."
+                        }
+                    ]
+                },
+                {
+                    label: "2단계",
+                    title: "모양 만들기",
+                    focus: "형용사는 <code>-(으)ㄴ 척하다</code>, 동사는 <code>-는 척하다</code>를 붙여요.",
+                    questions: [
+                        {
+                            prompt: "<code>자다</code> + <code>척하다</code> = ?",
+                            hint: "동사는 <code>-는 척하다</code>를 써요.",
+                            choices: ["잔 척하다", "자고 보니", "잘 척하다", "자는 척하다"],
+                            answer: 3,
+                            feedback: "<code>자다</code>는 동사이므로 <code>자는 척하다</code>가 맞습니다."
+                        },
+                        {
+                            prompt: "<code>바쁘다</code> + <code>척하다</code> = ?",
+                            hint: "형용사는 <code>-(으)ㄴ 척하다</code>를 써요.",
+                            choices: ["바쁘는 척하다", "바쁘고 보니", "바쁜 척하다", "바쁠 척하다"],
+                            answer: 2,
+                            feedback: "<code>바쁘다</code>는 형용사이므로 <code>바쁜 척하다</code>가 맞습니다."
+                        },
+                        {
+                            prompt: "<code>알다</code> + <code>척하다</code> = ?",
+                            hint: "동사 <code>알다</code>는 <code>아는</code> 모양을 써요.",
+                            choices: ["알은 척하다", "아는 척하다", "알고 보니", "알 척하다"],
+                            answer: 1,
+                            feedback: "<code>알다</code>는 동사이므로 <code>아는 척하다</code>가 자연스럽습니다."
+                        },
+                        {
+                            prompt: "<code>아프다</code> + <code>척하다</code> = ?",
+                            hint: "형용사 <code>아프다</code>는 <code>아픈</code> 모양을 써요.",
+                            choices: ["아픈 척하다", "아프는 척하다", "아프고 보니", "아플 척하다"],
+                            answer: 0,
+                            feedback: "<code>아프다</code>는 형용사이므로 <code>아픈 척하다</code>가 맞습니다."
+                        }
+                    ]
+                },
+                {
+                    label: "3단계",
+                    title: "문맥에서 고르기",
+                    focus: "짧은 상황을 보고 실제와 다른 행동을 골라요.",
+                    questions: [
+                        {
+                            contextKo: "친구 얼굴이 하얗고 기침을 해요. 일부러 그렇게 행동하는 것이 아니에요.",
+                            contextVi: "Mặt bạn tôi tái và bạn ấy ho. Bạn ấy không cố ý giả vờ như vậy.",
+                            prompt: "빈칸에 알맞은 말은? 친구가 ______.",
+                            hint: "일부러 꾸미는 행동이 아니라, 그렇게 보여요.",
+                            choices: ["아픈 척해요", "아파 보여요", "아프고 보니", "아프다고 해서"],
+                            answer: 1,
+                            contrast: true,
+                            feedback: "일부러 꾸미는 행동이 아니므로 <code>아파 보여요</code>가 맞습니다. <code>아픈 척해요</code>는 일부러 그런 것처럼 행동할 때 씁니다."
+                        },
+                        {
+                            contextKo: "유나는 그 소문을 들었어요. 하지만 수업에서 아무 말도 하지 않았어요.",
+                            contextVi: "Yuna đã nghe lời đồn đó. Nhưng trong lớp, cô ấy không nói gì.",
+                            prompt: "유나는 무엇을 했어요?",
+                            hint: "알지만 모르는 것처럼 행동했어요.",
+                            choices: ["알고 보니 몰랐어요.", "모르고 보니 들었어요.", "모르는 척했어요.", "모른다고 해서 다"],
+                            answer: 2,
+                            feedback: "소문을 알지만 모르는 것처럼 행동했으므로 <code>모르는 척했어요</code>가 자연스럽습니다."
+                        },
+                        {
+                            contextKo: "태오는 지금 책상에서 정말 숙제를 해요. 선생님이 보지 않아도 계속 해요.",
+                            contextVi: "Taeo thật sự đang làm bài tập ở bàn. Dù giáo viên không nhìn, cậu ấy vẫn tiếp tục làm.",
+                            prompt: "태오는 지금 무엇을 해요?",
+                            hint: "가짜 행동이 아니라, 지금 계속 하는 행동이에요.",
+                            choices: ["공부하는 척해요.", "공부한 척했어요.", "공부한다고 해서 다", "공부하고 있어요."],
+                            answer: 3,
+                            contrast: true,
+                            feedback: "진짜로 지금 공부하고 있으므로 <code>공부하고 있어요</code>가 맞습니다. 가짜 행동이면 <code>공부하는 척해요</code>를 씁니다."
+                        },
+                        {
+                            contextKo: "민지는 그 사람을 잘 몰라요. 그런데 친구들 앞에서 잘 아는 것처럼 말했어요.",
+                            contextVi: "Minji không biết rõ người đó. Nhưng trước mặt bạn bè, cô ấy nói như thể biết rõ.",
+                            prompt: "빈칸에 알맞은 말은? 민지는 그 사람을 ______.",
+                            hint: "잘 모르지만 잘 아는 것처럼 말했어요.",
+                            choices: ["아는 척했어요", "알고 보니 몰랐어요", "아는다고 해서 다", "알다니요"],
+                            answer: 0,
+                            feedback: "잘 모르지만 아는 것처럼 행동했으므로 <code>아는 척했어요</code>가 맞습니다."
+                        }
+                    ]
+                }
+            ]
+        };
+    </script>
+    <script src="grammar-support-quiz.js"></script>
+    <script src="../shared/site-copyright.js"></script>
+</body>
+</html>
