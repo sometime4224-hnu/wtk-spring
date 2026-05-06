@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+    <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+    <title>3B 14~16과 어휘·문법 모의고사</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../final-vocab-grammar-mock/styles.css">
+</head>
+<body class="quiz-page" data-round-id="c14c16-1">
+    <main class="page-shell quiz-shell">
+        <section class="quiz-panel">
+            <section id="quizIntro" class="section-card"></section>
+
+            <div class="toolbar">
+                <div class="toolbar__status">
+                    <div id="progressText" class="status-value">불러오는 중...</div>
+                    <div id="quizMeta" class="toolbar__meta"></div>
+                    <p id="scoreText" class="status-note">모든 문제를 풀면 채점할 수 있습니다.</p>
+                    <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+                </div>
+                <div class="toolbar__actions">
+                    <button id="gradeButton" data-action="grade" class="action-button action-button--primary" type="button">채점</button>
+                    <button id="resetButton" data-action="reset" class="action-button" type="button">다시</button>
+                </div>
+            </div>
+
+            <div id="loadError" class="error-card" hidden></div>
+            <div id="quizSections" class="section-stack"></div>
+            <div class="toolbar toolbar--bottom">
+                <div class="toolbar__status">
+                    <p class="status-note">마지막 문제까지 풀고 채점하세요.</p>
+                </div>
+                <div class="toolbar__actions">
+                    <button data-action="grade" class="action-button action-button--primary" type="button">채점</button>
+                    <button data-action="reset" class="action-button" type="button">다시</button>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="./quiz-data.js"></script>
+    <script defer src="../final-vocab-grammar-mock/app.js"></script>
+</body>
+</html>
