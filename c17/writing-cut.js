@@ -28,12 +28,6 @@
             short: "빈칸",
             title: "빈칸 직접 쓰기",
             guide: "중요 표현을 직접 입력하세요."
-        },
-        {
-            id: "full",
-            short: "문장",
-            title: "전체 문장 쓰기",
-            guide: "컷을 보며 문장을 직접 써 보세요."
         }
     ];
 
@@ -271,10 +265,8 @@
             renderKeywordTask(cut);
         } else if (stage.id === "order") {
             renderOrderTask(cut);
-        } else if (stage.id === "blank") {
-            renderBlankTask(cut);
         } else {
-            renderFullTask(cut);
+            renderBlankTask(cut);
         }
     }
 
@@ -316,13 +308,6 @@
                     </label>`
                 )).join("")}
             </div>
-        `;
-    }
-
-    function renderFullTask(cut) {
-        els.taskBody.innerHTML = `
-            <div class="target-sentence">핵심어: ${cut.required.join(" · ")}</div>
-            <textarea id="fullAnswer" placeholder="컷을 보고 전체 문장을 써 보세요."></textarea>
         `;
     }
 
@@ -387,11 +372,6 @@
             const values = Array.from(document.querySelectorAll("[data-blank-input]")).map((input) => input.value);
             const good = cut.blanks.every((answer, index) => normalize(answer) === normalize(values[index]));
             setFeedback(good ? "빈칸을 정확히 썼습니다." : "빈칸 표현을 다시 확인하세요. 띄어쓰기는 크게 보지 않지만 핵심 낱말은 맞아야 합니다.", good);
-        } else {
-            const value = document.getElementById("fullAnswer").value;
-            const normalized = normalize(value);
-            const good = cut.required.every((word) => normalized.includes(normalize(word)));
-            setFeedback(good ? "핵심 내용이 모두 들어갔습니다." : "문장에 핵심어를 더 넣어 보세요.", good);
         }
     }
 

@@ -88,6 +88,10 @@ test('c17 cut writing page checks a sentence choice', async ({ page }) => {
   await expect(page.locator('h1')).toContainText('서동요 컷 쓰기');
   await expect(page.locator('.cut-pick')).toHaveCount(9);
   await expect(page.locator('#cutImage')).toHaveAttribute('src', /writing-cut\/c17-writing-cut-01\.webp/);
+  await expect(page.locator('#progressDots .dot')).toHaveCount(4);
+  await expect(page.locator('#modeRow')).not.toContainText('문장');
+  await expect(page.locator('body')).not.toContainText('전체 문장 쓰기');
+  await expect(page.locator('.cut-pick').first()).toContainText('0/4 완료');
 
   await page.waitForFunction(() => {
     const image = document.querySelector('#cutImage');
