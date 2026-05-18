@@ -176,7 +176,7 @@
 
       <details class="staff-note">
         <summary>강사용 자료 관리</summary>
-        <p>${DATA.scopeNote ? `${escapeHtml(DATA.scopeNote)} ` : ""}${escapeHtml(DATA.sourceNote)} 문항별 이미지는 ignored 폴더인 <code>private-assets</code>에만 생성되고, 듣기 MP3는 <code>assets/audio</code>에서 재생됩니다.</p>
+        <p>${DATA.scopeNote ? `${escapeHtml(DATA.scopeNote)} ` : ""}${escapeHtml(DATA.sourceNote)} 문항별 이미지는 <code>assets/questions</code>, 듣기 MP3는 <code>assets/audio</code>에서 재생됩니다.</p>
       </details>
     `);
   }

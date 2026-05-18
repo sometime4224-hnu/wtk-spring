@@ -9,6 +9,7 @@ $ErrorActionPreference = "Stop"
 $AppRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..")).Path
 $PrivateRoot = Join-Path $AppRoot "private-assets"
 $AudioRoot = Join-Path $AppRoot "assets\audio"
+$QuestionsRoot = Join-Path $AppRoot "assets\questions"
 
 function Ensure-Directory {
   param([string]$Path)
@@ -70,7 +71,7 @@ if (-not $SkipPages) {
     }
   }
 
-  $questionsDir = Join-Path $PrivateRoot "questions"
+  $questionsDir = $QuestionsRoot
   & $python.Source (Join-Path $PSScriptRoot "crop-question-assets.py") --pages-dir $pagesDir --output-dir $questionsDir
   if ($LASTEXITCODE -ne 0) {
     throw "Question image cropping failed."
@@ -79,6 +80,15 @@ if (-not $SkipPages) {
   $resolvedPages = Resolve-Path -LiteralPath $pagesDir -ErrorAction SilentlyContinue
   if ($resolvedPages -and $resolvedPages.Path.StartsWith($PrivateRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
     Remove-Item -LiteralPath $resolvedPages.Path -Recurse -Force
+  }
+
+  $legacyQuestionsRoot = Join-Path $PrivateRoot "questions"
+  if (Test-Path -LiteralPath $legacyQuestionsRoot) {
+    $resolvedLegacyQuestions = (Resolve-Path -LiteralPath $legacyQuestionsRoot).Path
+    if (-not $resolvedLegacyQuestions.StartsWith($PrivateRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+      throw "Refusing to clear unexpected legacy questions directory: $resolvedLegacyQuestions"
+    }
+    Remove-Item -LiteralPath $resolvedLegacyQuestions -Recurse -Force
   }
 }
 
@@ -160,4 +170,5 @@ if (-not $SkipAudio) {
 }
 
 Write-Host "private-assets ready: $PrivateRoot"
+Write-Host "trackable question images ready: $QuestionsRoot"
 Write-Host "trackable audio ready: $AudioRoot"

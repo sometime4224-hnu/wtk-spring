@@ -4,9 +4,9 @@
 
 ## 원본 자료 관리
 
-원본 PDF, HWP, ZIP 파일은 저장소에 넣지 않습니다. 문항별 크롭 이미지는 로컬 전용 폴더인 `private-assets/`에 생성하며, 이 폴더는 `.gitignore`에 등록되어 있습니다.
+원본 PDF, HWP, ZIP 파일은 저장소에 넣지 않습니다.
 
-듣기 음원은 TOPIK 공식 홈페이지 공개 자료로 확인된 범위에서 이 모의고사에 한해 저장소에 포함할 수 있도록 `assets/audio/`에 생성합니다.
+이번 모의고사에 한해 문항별 크롭 이미지와 듣기 음원은 저장소에 포함할 수 있도록 `assets/questions/`, `assets/audio/`에 생성합니다. 듣기 음원은 TOPIK 공식 홈페이지 공개 자료로 확인된 범위에서 사용합니다.
 
 ```powershell
 cd C:\Users\somet\Desktop\00.my_app_project\korean3Bimprove\apps\korean-practice-topik-mock
@@ -27,7 +27,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\prepare-private-as
 
 생성되는 로컬 파일:
 
-- `private-assets/questions/*.jpg`
+- `assets/questions/*.jpg`
 - `assets/audio/type-4/q-*.mp3`
 - `assets/audio/type-5/q-*.mp3`
 

@@ -2,7 +2,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
   "quizId": "korean-practice-topik-mock",
   "title": "한국어 연습(토픽) 기말 모의고사",
   "subtitle": "중간고사 이후 기말고사 범위: 읽기 유형 3~4 · 듣기 유형 4~5",
-  "sourceNote": "원본 PDF/HWP/ZIP과 문항 이미지는 저장소에 포함하지 않습니다. 듣기 음원은 TOPIK 공식 공개 자료로 확인된 범위에서 앱 assets/audio에 포함합니다.",
+  "sourceNote": "원본 PDF/HWP/ZIP은 저장소에 포함하지 않습니다. 이 모의고사에 한해 문항 이미지와 TOPIK 공식 공개 듣기 음원은 앱 assets에 포함합니다.",
   "scopeNote": "3B 읽기(한국어연습) 수업진도표 기준 기말고사 범위입니다. 현재 앱에는 쓰기 유형을 제외한 읽기·듣기 모의고사만 포함했습니다.",
   "sections": [
     {
@@ -21,7 +21,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 그래프의 내용과 같은 것을 고르십시오.",
           "answer": "2",
           "page": 17,
-          "pageImage": "private-assets/questions/reading-type3-q01.jpg",
+          "pageImage": "assets/questions/reading-type3-q01.jpg",
           "choices": [
             {
               "id": "1",
@@ -48,7 +48,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 그래프의 내용과 같은 것을 고르십시오.",
           "answer": "4",
           "page": 17,
-          "pageImage": "private-assets/questions/reading-type3-q02.jpg",
+          "pageImage": "assets/questions/reading-type3-q02.jpg",
           "choices": [
             {
               "id": "1",
@@ -75,7 +75,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 그래프의 내용과 같은 것을 고르십시오.",
           "answer": "2",
           "page": 18,
-          "pageImage": "private-assets/questions/reading-type3-q03.jpg",
+          "pageImage": "assets/questions/reading-type3-q03.jpg",
           "choices": [
             {
               "id": "1",
@@ -102,7 +102,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 그래프의 내용과 같은 것을 고르십시오.",
           "answer": "3",
           "page": 18,
-          "pageImage": "private-assets/questions/reading-type3-q04.jpg",
+          "pageImage": "assets/questions/reading-type3-q04.jpg",
           "choices": [
             {
               "id": "1",
@@ -129,7 +129,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 그래프의 내용과 같은 것을 고르십시오.",
           "answer": "3",
           "page": 19,
-          "pageImage": "private-assets/questions/reading-type3-q05.jpg",
+          "pageImage": "assets/questions/reading-type3-q05.jpg",
           "choices": [
             {
               "id": "1",
@@ -156,7 +156,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 그래프의 내용과 같은 것을 고르십시오.",
           "answer": "3",
           "page": 19,
-          "pageImage": "private-assets/questions/reading-type3-q06.jpg",
+          "pageImage": "assets/questions/reading-type3-q06.jpg",
           "choices": [
             {
               "id": "1",
@@ -183,7 +183,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 그래프의 내용과 같은 것을 고르십시오.",
           "answer": "1",
           "page": 20,
-          "pageImage": "private-assets/questions/reading-type3-q07.jpg",
+          "pageImage": "assets/questions/reading-type3-q07.jpg",
           "choices": [
             {
               "id": "1",
@@ -210,7 +210,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 그래프의 내용과 같은 것을 고르십시오.",
           "answer": "3",
           "page": 20,
-          "pageImage": "private-assets/questions/reading-type3-q08.jpg",
+          "pageImage": "assets/questions/reading-type3-q08.jpg",
           "choices": [
             {
               "id": "1",
@@ -237,7 +237,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 그래프의 내용과 같은 것을 고르십시오.",
           "answer": "3",
           "page": 21,
-          "pageImage": "private-assets/questions/reading-type3-q09.jpg",
+          "pageImage": "assets/questions/reading-type3-q09.jpg",
           "choices": [
             {
               "id": "1",
@@ -264,7 +264,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 그래프의 내용과 같은 것을 고르십시오.",
           "answer": "2",
           "page": 21,
-          "pageImage": "private-assets/questions/reading-type3-q10.jpg",
+          "pageImage": "assets/questions/reading-type3-q10.jpg",
           "choices": [
             {
               "id": "1",
@@ -302,7 +302,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 글을 읽고 알맞은 답을 고르십시오.",
           "answer": "4",
           "page": 23,
-          "pageImage": "private-assets/questions/reading-type4-q01.jpg",
+          "pageImage": "assets/questions/reading-type4-q01.jpg",
           "choices": [
             {
               "id": "1",
@@ -329,7 +329,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 글을 읽고 알맞은 답을 고르십시오.",
           "answer": "1",
           "page": 23,
-          "pageImage": "private-assets/questions/reading-type4-q02.jpg",
+          "pageImage": "assets/questions/reading-type4-q02.jpg",
           "choices": [
             {
               "id": "1",
@@ -356,7 +356,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 글을 읽고 알맞은 답을 고르십시오.",
           "answer": "4",
           "page": 24,
-          "pageImage": "private-assets/questions/reading-type4-q03.jpg",
+          "pageImage": "assets/questions/reading-type4-q03.jpg",
           "choices": [
             {
               "id": "1",
@@ -383,7 +383,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 글을 읽고 알맞은 답을 고르십시오.",
           "answer": "1",
           "page": 24,
-          "pageImage": "private-assets/questions/reading-type4-q04.jpg",
+          "pageImage": "assets/questions/reading-type4-q04.jpg",
           "choices": [
             {
               "id": "1",
@@ -410,7 +410,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 글을 읽고 알맞은 답을 고르십시오.",
           "answer": "2",
           "page": 25,
-          "pageImage": "private-assets/questions/reading-type4-q05.jpg",
+          "pageImage": "assets/questions/reading-type4-q05.jpg",
           "choices": [
             {
               "id": "1",
@@ -437,7 +437,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 글을 읽고 알맞은 답을 고르십시오.",
           "answer": "3",
           "page": 25,
-          "pageImage": "private-assets/questions/reading-type4-q06.jpg",
+          "pageImage": "assets/questions/reading-type4-q06.jpg",
           "choices": [
             {
               "id": "1",
@@ -464,7 +464,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 글을 읽고 알맞은 답을 고르십시오.",
           "answer": "1",
           "page": 26,
-          "pageImage": "private-assets/questions/reading-type4-q07.jpg",
+          "pageImage": "assets/questions/reading-type4-q07.jpg",
           "choices": [
             {
               "id": "1",
@@ -491,7 +491,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 글을 읽고 알맞은 답을 고르십시오.",
           "answer": "2",
           "page": 26,
-          "pageImage": "private-assets/questions/reading-type4-q08.jpg",
+          "pageImage": "assets/questions/reading-type4-q08.jpg",
           "choices": [
             {
               "id": "1",
@@ -518,7 +518,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 글을 읽고 알맞은 답을 고르십시오.",
           "answer": "1",
           "page": 27,
-          "pageImage": "private-assets/questions/reading-type4-q09.jpg",
+          "pageImage": "assets/questions/reading-type4-q09.jpg",
           "choices": [
             {
               "id": "1",
@@ -545,7 +545,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 글을 읽고 알맞은 답을 고르십시오.",
           "answer": "3",
           "page": 27,
-          "pageImage": "private-assets/questions/reading-type4-q10.jpg",
+          "pageImage": "assets/questions/reading-type4-q10.jpg",
           "choices": [
             {
               "id": "1",
@@ -572,7 +572,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 글을 읽고 알맞은 답을 고르십시오.",
           "answer": "2",
           "page": 28,
-          "pageImage": "private-assets/questions/reading-type4-q11.jpg",
+          "pageImage": "assets/questions/reading-type4-q11.jpg",
           "choices": [
             {
               "id": "1",
@@ -599,7 +599,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 글을 읽고 알맞은 답을 고르십시오.",
           "answer": "2",
           "page": 28,
-          "pageImage": "private-assets/questions/reading-type4-q12.jpg",
+          "pageImage": "assets/questions/reading-type4-q12.jpg",
           "choices": [
             {
               "id": "1",
@@ -637,7 +637,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 대화를 듣고 이어서 할 행동으로 알맞은 것을 고르십시오.",
           "answer": "3",
           "page": 48,
-          "pageImage": "private-assets/questions/listening-type4-q01.jpg",
+          "pageImage": "assets/questions/listening-type4-q01.jpg",
           "choices": [
             {
               "id": "1",
@@ -671,7 +671,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 대화를 듣고 이어서 할 행동으로 알맞은 것을 고르십시오.",
           "answer": "4",
           "page": 48,
-          "pageImage": "private-assets/questions/listening-type4-q02.jpg",
+          "pageImage": "assets/questions/listening-type4-q02.jpg",
           "choices": [
             {
               "id": "1",
@@ -705,7 +705,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 대화를 듣고 이어서 할 행동으로 알맞은 것을 고르십시오.",
           "answer": "3",
           "page": 48,
-          "pageImage": "private-assets/questions/listening-type4-q03.jpg",
+          "pageImage": "assets/questions/listening-type4-q03.jpg",
           "choices": [
             {
               "id": "1",
@@ -739,7 +739,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 대화를 듣고 이어서 할 행동으로 알맞은 것을 고르십시오.",
           "answer": "1",
           "page": 48,
-          "pageImage": "private-assets/questions/listening-type4-q04.jpg",
+          "pageImage": "assets/questions/listening-type4-q04.jpg",
           "choices": [
             {
               "id": "1",
@@ -773,7 +773,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 대화를 듣고 이어서 할 행동으로 알맞은 것을 고르십시오.",
           "answer": "2",
           "page": 48,
-          "pageImage": "private-assets/questions/listening-type4-q05.jpg",
+          "pageImage": "assets/questions/listening-type4-q05.jpg",
           "choices": [
             {
               "id": "1",
@@ -807,7 +807,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 대화를 듣고 이어서 할 행동으로 알맞은 것을 고르십시오.",
           "answer": "2",
           "page": 49,
-          "pageImage": "private-assets/questions/listening-type4-q06.jpg",
+          "pageImage": "assets/questions/listening-type4-q06.jpg",
           "choices": [
             {
               "id": "1",
@@ -841,7 +841,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 대화를 듣고 이어서 할 행동으로 알맞은 것을 고르십시오.",
           "answer": "1",
           "page": 49,
-          "pageImage": "private-assets/questions/listening-type4-q07.jpg",
+          "pageImage": "assets/questions/listening-type4-q07.jpg",
           "choices": [
             {
               "id": "1",
@@ -875,7 +875,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 대화를 듣고 이어서 할 행동으로 알맞은 것을 고르십시오.",
           "answer": "1",
           "page": 49,
-          "pageImage": "private-assets/questions/listening-type4-q08.jpg",
+          "pageImage": "assets/questions/listening-type4-q08.jpg",
           "choices": [
             {
               "id": "1",
@@ -909,7 +909,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 대화를 듣고 이어서 할 행동으로 알맞은 것을 고르십시오.",
           "answer": "1",
           "page": 49,
-          "pageImage": "private-assets/questions/listening-type4-q09.jpg",
+          "pageImage": "assets/questions/listening-type4-q09.jpg",
           "choices": [
             {
               "id": "1",
@@ -943,7 +943,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 대화를 듣고 이어서 할 행동으로 알맞은 것을 고르십시오.",
           "answer": "1",
           "page": 49,
-          "pageImage": "private-assets/questions/listening-type4-q10.jpg",
+          "pageImage": "assets/questions/listening-type4-q10.jpg",
           "choices": [
             {
               "id": "1",
@@ -977,7 +977,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 대화를 듣고 이어서 할 행동으로 알맞은 것을 고르십시오.",
           "answer": "3",
           "page": 50,
-          "pageImage": "private-assets/questions/listening-type4-q11.jpg",
+          "pageImage": "assets/questions/listening-type4-q11.jpg",
           "choices": [
             {
               "id": "1",
@@ -1011,7 +1011,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 대화를 듣고 이어서 할 행동으로 알맞은 것을 고르십시오.",
           "answer": "3",
           "page": 50,
-          "pageImage": "private-assets/questions/listening-type4-q12.jpg",
+          "pageImage": "assets/questions/listening-type4-q12.jpg",
           "choices": [
             {
               "id": "1",
@@ -1045,7 +1045,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 대화를 듣고 이어서 할 행동으로 알맞은 것을 고르십시오.",
           "answer": "2",
           "page": 50,
-          "pageImage": "private-assets/questions/listening-type4-q13.jpg",
+          "pageImage": "assets/questions/listening-type4-q13.jpg",
           "choices": [
             {
               "id": "1",
@@ -1079,7 +1079,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 대화를 듣고 이어서 할 행동으로 알맞은 것을 고르십시오.",
           "answer": "1",
           "page": 50,
-          "pageImage": "private-assets/questions/listening-type4-q14.jpg",
+          "pageImage": "assets/questions/listening-type4-q14.jpg",
           "choices": [
             {
               "id": "1",
@@ -1113,7 +1113,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음 대화를 듣고 이어서 할 행동으로 알맞은 것을 고르십시오.",
           "answer": "4",
           "page": 50,
-          "pageImage": "private-assets/questions/listening-type4-q15.jpg",
+          "pageImage": "assets/questions/listening-type4-q15.jpg",
           "choices": [
             {
               "id": "1",
@@ -1158,7 +1158,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음을 듣고 내용과 일치하는 것을 고르십시오.",
           "answer": "1",
           "page": 52,
-          "pageImage": "private-assets/questions/listening-type5-q01.jpg",
+          "pageImage": "assets/questions/listening-type5-q01.jpg",
           "choices": [
             {
               "id": "1",
@@ -1192,7 +1192,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음을 듣고 내용과 일치하는 것을 고르십시오.",
           "answer": "2",
           "page": 52,
-          "pageImage": "private-assets/questions/listening-type5-q02.jpg",
+          "pageImage": "assets/questions/listening-type5-q02.jpg",
           "choices": [
             {
               "id": "1",
@@ -1226,7 +1226,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음을 듣고 내용과 일치하는 것을 고르십시오.",
           "answer": "4",
           "page": 52,
-          "pageImage": "private-assets/questions/listening-type5-q03.jpg",
+          "pageImage": "assets/questions/listening-type5-q03.jpg",
           "choices": [
             {
               "id": "1",
@@ -1260,7 +1260,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음을 듣고 내용과 일치하는 것을 고르십시오.",
           "answer": "4",
           "page": 52,
-          "pageImage": "private-assets/questions/listening-type5-q04.jpg",
+          "pageImage": "assets/questions/listening-type5-q04.jpg",
           "choices": [
             {
               "id": "1",
@@ -1294,7 +1294,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음을 듣고 내용과 일치하는 것을 고르십시오.",
           "answer": "1",
           "page": 53,
-          "pageImage": "private-assets/questions/listening-type5-q05.jpg",
+          "pageImage": "assets/questions/listening-type5-q05.jpg",
           "choices": [
             {
               "id": "1",
@@ -1328,7 +1328,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음을 듣고 내용과 일치하는 것을 고르십시오.",
           "answer": "1",
           "page": 53,
-          "pageImage": "private-assets/questions/listening-type5-q06.jpg",
+          "pageImage": "assets/questions/listening-type5-q06.jpg",
           "choices": [
             {
               "id": "1",
@@ -1362,7 +1362,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음을 듣고 내용과 일치하는 것을 고르십시오.",
           "answer": "4",
           "page": 53,
-          "pageImage": "private-assets/questions/listening-type5-q07.jpg",
+          "pageImage": "assets/questions/listening-type5-q07.jpg",
           "choices": [
             {
               "id": "1",
@@ -1396,7 +1396,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음을 듣고 내용과 일치하는 것을 고르십시오.",
           "answer": "2",
           "page": 53,
-          "pageImage": "private-assets/questions/listening-type5-q08.jpg",
+          "pageImage": "assets/questions/listening-type5-q08.jpg",
           "choices": [
             {
               "id": "1",
@@ -1430,7 +1430,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음을 듣고 내용과 일치하는 것을 고르십시오.",
           "answer": "3",
           "page": 54,
-          "pageImage": "private-assets/questions/listening-type5-q09.jpg",
+          "pageImage": "assets/questions/listening-type5-q09.jpg",
           "choices": [
             {
               "id": "1",
@@ -1464,7 +1464,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음을 듣고 내용과 일치하는 것을 고르십시오.",
           "answer": "3",
           "page": 54,
-          "pageImage": "private-assets/questions/listening-type5-q10.jpg",
+          "pageImage": "assets/questions/listening-type5-q10.jpg",
           "choices": [
             {
               "id": "1",
@@ -1498,7 +1498,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음을 듣고 내용과 일치하는 것을 고르십시오.",
           "answer": "4",
           "page": 54,
-          "pageImage": "private-assets/questions/listening-type5-q11.jpg",
+          "pageImage": "assets/questions/listening-type5-q11.jpg",
           "choices": [
             {
               "id": "1",
@@ -1532,7 +1532,7 @@ window.TOPIK_PRACTICE_MOCK_DATA = {
           "prompt": "다음을 듣고 내용과 일치하는 것을 고르십시오.",
           "answer": "1",
           "page": 54,
-          "pageImage": "private-assets/questions/listening-type5-q12.jpg",
+          "pageImage": "assets/questions/listening-type5-q12.jpg",
           "choices": [
             {
               "id": "1",
